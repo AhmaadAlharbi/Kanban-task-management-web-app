@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white shadow-xl py-7 w-80 h-screen">
+  <div class="bg-white shadow-xl py-7 w-80 h-screen px-2">
     <div class="">
       <img src="@/assets/images/logo-dark.svg" alt="" />
       <div class="">
@@ -15,7 +15,7 @@
       </div>
     </div>
     <div
-      class="flex items-center space-x-3 absolute bottom-10 justify-center left-5 bg-gray-200 px-20"
+      class="flex items-center space-x-3 absolute bottom-10 justify-center left-5 bg-gray-200 px-10"
     >
       <div>
         <img src="../assets/images/icon-light-theme.svg" alt="" />

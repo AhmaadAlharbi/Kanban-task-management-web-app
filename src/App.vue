@@ -5,10 +5,10 @@ import Sidebar from "@/components/Sidebar.vue";
 </script>
 
 <template>
-  <Navbar />
-  <Sidebar />
-
-  <RouterView />
+  <div class="flex">
+    <Sidebar />
+    <RouterView />
+  </div>
 </template>
 
 <style scoped>
