@@ -5,8 +5,7 @@ export const useTaskStore = defineStore("taskStore", {
   state: () => ({
     boards: [],
     loading: false,
-
-    selectedBoardIndex: 0,
+    selectedBoardIndex: 1,
   }),
   getters: {
     totalCount: (state) => {
@@ -14,15 +13,27 @@ export const useTaskStore = defineStore("taskStore", {
     },
   },
   actions: {
-    async getTasks() {
+    // async getTasks() {
+    //   this.loading = true;
+    //   // get data from json file using json server
+    //   const res = await fetch("http://localhost:3000/boards");
+    //   const data = await res.json();
+    //   this.boards = data;
+    //   this.loading = false;
+    // },
+    async getBoards() {
       this.loading = true;
-      // get data from json file using json server
-      const res = await fetch("http://localhost:3000/boards");
-      const data = await res.json();
-      this.boards = data;
+      try {
+        const response = await fetch("http://localhost:3000/boards");
+        const data = await response.json();
+        this.boards = data;
+      } catch (error) {
+        console.error("Error fetching boards:", error);
+      }
       this.loading = false;
     },
-    selectBoard(index) {
+
+    setSelectedBoardIndex(index) {
       this.selectedBoardIndex = index;
     },
   },

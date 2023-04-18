@@ -8,9 +8,14 @@
         </li>
       </ul>
     </nav>
-    <section class="px-10 mt-5 flex flex-wrap justify-evenly">
+    <div v-if="taskStore.loading">Loading...</div>
+
+    <section
+      v-if="taskStore.boards && taskStore.boards.length > 0"
+      class="container px-10 mt-5 flex justify-between"
+    >
       <!-- TODO -->
-      <div v-if="taskStore.boards.length" class="">
+      <div v-if="selectedBoard" class="">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-sky-500"></div>
           <h1 class="text-blak">
@@ -18,7 +23,7 @@
           </h1>
         </div>
         <div
-          v-for="(task, index) in taskStore.boards[0].columns[0].tasks"
+          v-for="(task, index) in selectedBoard.columns[0].tasks"
           :key="index"
           class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
         >
@@ -31,7 +36,7 @@
       </div>
 
       <!-- DOING -->
-      <div v-if="taskStore.boards.length" class="">
+      <div v-if="selectedBoard" class="">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-purple-500"></div>
           <h1 class="text-blak">
@@ -39,7 +44,7 @@
           </h1>
         </div>
         <div
-          v-for="(task, index) in taskStore.boards[0].columns[1].tasks"
+          v-for="(task, index) in selectedBoard.columns[0].tasks"
           :key="index"
           class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
         >
@@ -52,7 +57,7 @@
       </div>
 
       <!-- DONE -->
-      <div v-if="taskStore.boards.length" class="">
+      <div v-if="selectedBoard" class="">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-green-500"></div>
           <h1 class="text-blak">
@@ -60,7 +65,7 @@
           </h1>
         </div>
         <div
-          v-for="(task, index) in taskStore.boards[0].columns[2].tasks"
+          v-for="(task, index) in selectedBoard.columns[0].tasks"
           :key="index"
           class="shadow-md bg-white mt-3 py-3 px-6 w-80 mb-8"
         >
@@ -87,14 +92,17 @@ export default {
   setup() {
     const taskStore = useTaskStore();
     onMounted(() => {
-      taskStore.getTasks();
+      taskStore.getBoards();
     });
     const completedSubtasksCount = (task) => {
       return computed(() => {
         return task.subtasks.filter((subtask) => subtask.isCompleted).length;
       });
     };
-    return { taskStore, completedSubtasksCount };
+    const selectedBoard = computed(() => {
+      return taskStore.boards[taskStore.selectedBoardIndex];
+    });
+    return { taskStore, completedSubtasksCount, selectedBoard };
   },
 };
 </script>

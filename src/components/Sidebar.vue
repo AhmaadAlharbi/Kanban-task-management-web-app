@@ -12,10 +12,16 @@
               v-for="(board, index) in taskStore.boards"
               :key="index"
               class="p-2 rounded-2xl"
-              :class="index == 0 ? 'bg-purple-500 text-white' : ''"
+              :class="
+                index == taskStore.selectedBoardIndex
+                  ? 'bg-purple-500 text-white'
+                  : ''
+              "
+              @click="changeActiveBoard(index)"
             >
               {{ board.name }}
             </li>
+
             <li class="">+ Create a New Board</li>
           </ul>
         </nav>
@@ -51,10 +57,16 @@
 
 <script>
 import { useTaskStore } from "../stores/TaskStore";
+import { ref } from "vue";
 export default {
   setup() {
     const taskStore = useTaskStore();
-    return { taskStore };
+    const activeBoardIndex = ref(0);
+
+    const changeActiveBoard = (index) => {
+      taskStore.setSelectedBoardIndex(index);
+    };
+    return { taskStore, activeBoardIndex, changeActiveBoard };
   },
 };
 </script>
