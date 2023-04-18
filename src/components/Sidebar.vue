@@ -3,7 +3,9 @@
     <div class="">
       <img src="@/assets/images/logo-dark.svg" alt="" />
       <div class="">
-        <p class="uppercase text-gray-500 my-5 px-3">all boards (8)</p>
+        <p class="uppercase text-gray-500 my-5 px-3">
+          all boards ({{ taskStore.totalCount }})
+        </p>
         <nav>
           <ul class="space-y-4 px-3 cursor-pointer">
             <li
@@ -14,7 +16,6 @@
             >
               {{ board.name }}
             </li>
-
             <li class="">+ Create a New Board</li>
           </ul>
         </nav>

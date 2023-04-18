@@ -24,7 +24,8 @@
         >
           <h3 class="font-bold text-xl">{{ task.title }}</h3>
           <p class="text-gray-500">
-            {{ task.subtasksCompleted }} of {{ task.subtasks.length }} subtasks
+            {{ completedSubtasksCount(task).value }} of
+            {{ task.subtasks.length }} subtasks
           </p>
         </div>
       </div>
@@ -44,7 +45,8 @@
         >
           <h3 class="font-bold text-xl">{{ task.title }}</h3>
           <p class="text-gray-500">
-            {{ task.subtasksCompleted }} of {{ task.subtasks.length }} subtasks
+            {{ completedSubtasksCount(task).value }} of
+            {{ task.subtasks.length }} subtasks
           </p>
         </div>
       </div>
@@ -64,7 +66,8 @@
         >
           <h3 class="font-bold text-xl">{{ task.title }}</h3>
           <p class="text-gray-500">
-            {{ task.subtasksCompleted }} of {{ task.subtasks.length }} subtasks
+            {{ completedSubtasksCount(task).value }} of
+            {{ task.subtasks.length }} subtasks
           </p>
         </div>
       </div>
@@ -78,7 +81,7 @@
 
 <script>
 import { useTaskStore } from "../stores/TaskStore";
-import { onMounted } from "vue";
+import { onMounted, computed } from "vue";
 
 export default {
   setup() {
@@ -86,7 +89,12 @@ export default {
     onMounted(() => {
       taskStore.getTasks();
     });
-    return { taskStore };
+    const completedSubtasksCount = (task) => {
+      return computed(() => {
+        return task.subtasks.filter((subtask) => subtask.isCompleted).length;
+      });
+    };
+    return { taskStore, completedSubtasksCount };
   },
 };
 </script>
