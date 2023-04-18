@@ -8,84 +8,87 @@
         </li>
       </ul>
     </nav>
-    <section class="container px-10 mt-5 flex justify-between items-center">
+    <section class="px-10 mt-5 flex flex-wrap justify-evenly">
       <!-- TODO -->
-      <div>
+      <div v-if="taskStore.boards.length" class="">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-sky-500"></div>
-          <h1 class="text-blak">TODO (4)</h1>
+          <h1 class="text-blak">
+            TODO ({{ taskStore.boards[0].columns[0].tasks.length }})
+          </h1>
         </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">Build UI for onboarding flow</h3>
-          <p class="text-gray-500">0 of 6 substasks</p>
-        </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">Build UI for search</h3>
-          <p class="text-gray-500">1 of 6 substasks</p>
-        </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">Build UI for search</h3>
-          <p class="text-gray-500">0 of 1 substasks</p>
-        </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">QA and test all major user journeys</h3>
-          <p class="text-gray-500">0 of 2 substasks</p>
+        <div
+          v-for="(task, index) in taskStore.boards[0].columns[0].tasks"
+          :key="index"
+          class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
+        >
+          <h3 class="font-bold text-xl">{{ task.title }}</h3>
+          <p class="text-gray-500">
+            {{ task.subtasksCompleted }} of {{ task.subtasks.length }} subtasks
+          </p>
         </div>
       </div>
-      <!-- DOING -->
 
-      <div>
+      <!-- DOING -->
+      <div v-if="taskStore.boards.length" class="">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-purple-500"></div>
-          <h1 class="text-blak">DOING (4)</h1>
+          <h1 class="text-blak">
+            DOING ({{ taskStore.boards[0].columns[1].tasks.length }})
+          </h1>
         </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">Build UI for onboarding flow</h3>
-          <p class="text-gray-500">0 of 6 substasks</p>
-        </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">Build UI for search</h3>
-          <p class="text-gray-500">1 of 6 substasks</p>
-        </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">Build UI for search</h3>
-          <p class="text-gray-500">0 of 1 substasks</p>
-        </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">QA and test all major user journeys</h3>
-          <p class="text-gray-500">0 of 2 substasks</p>
+        <div
+          v-for="(task, index) in taskStore.boards[0].columns[1].tasks"
+          :key="index"
+          class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
+        >
+          <h3 class="font-bold text-xl">{{ task.title }}</h3>
+          <p class="text-gray-500">
+            {{ task.subtasksCompleted }} of {{ task.subtasks.length }} subtasks
+          </p>
         </div>
       </div>
-      <!-- DONE -->
 
-      <div>
+      <!-- DONE -->
+      <div v-if="taskStore.boards.length" class="">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-green-500"></div>
-          <h1 class="text-blak">DONE (4)</h1>
+          <h1 class="text-blak">
+            DONE ({{ taskStore.boards[0].columns[2].tasks.length }})
+          </h1>
         </div>
-        <div class="shadow-sm bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">Build UI for onboarding flow</h3>
-          <p class="text-gray-500">0 of 6 substasks</p>
+        <div
+          v-for="(task, index) in taskStore.boards[0].columns[2].tasks"
+          :key="index"
+          class="shadow-md bg-white mt-3 py-3 px-6 w-80 mb-8"
+        >
+          <h3 class="font-bold text-xl">{{ task.title }}</h3>
+          <p class="text-gray-500">
+            {{ task.subtasksCompleted }} of {{ task.subtasks.length }} subtasks
+          </p>
         </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">Build UI for search</h3>
-          <p class="text-gray-500">1 of 6 substasks</p>
-        </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">Build UI for search</h3>
-          <p class="text-gray-500">0 of 1 substasks</p>
-        </div>
-        <div class="shadow-md bg-white mt-3 py-3 px-6">
-          <h3 class="font-bold text-xl">QA and test all major user journeys</h3>
-          <p class="text-gray-500">0 of 2 substasks</p>
-        </div>
+      </div>
+      <!-- new column -->
+      <div class="self-center bg-gray-300 py-96 px-20">
+        <button>+ New Column</button>
       </div>
     </section>
   </div>
 </template>
 
 <script>
-export default {};
+import { useTaskStore } from "../stores/TaskStore";
+import { onMounted } from "vue";
+
+export default {
+  setup() {
+    const taskStore = useTaskStore();
+    onMounted(() => {
+      taskStore.getTasks();
+    });
+    return { taskStore };
+  },
+};
 </script>
 
 <style>

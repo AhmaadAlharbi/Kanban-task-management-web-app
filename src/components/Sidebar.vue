@@ -6,9 +6,15 @@
         <p class="uppercase text-gray-500 my-5 px-3">all boards (8)</p>
         <nav>
           <ul class="space-y-4 px-3 cursor-pointer">
-            <li class="bg-purple-400 py-4 rounded-2xl">Platform Launch</li>
-            <li class="">Marketing Plan</li>
-            <li class="">Roadmap</li>
+            <li
+              v-for="(board, index) in taskStore.boards"
+              :key="index"
+              class="p-2 rounded-2xl"
+              :class="index == 0 ? 'bg-purple-500 text-white' : ''"
+            >
+              {{ board.name }}
+            </li>
+
             <li class="">+ Create a New Board</li>
           </ul>
         </nav>
@@ -43,7 +49,13 @@
 </template>
 
 <script>
-export default {};
+import { useTaskStore } from "../stores/TaskStore";
+export default {
+  setup() {
+    const taskStore = useTaskStore();
+    return { taskStore };
+  },
+};
 </script>
 
 <style scoped>
