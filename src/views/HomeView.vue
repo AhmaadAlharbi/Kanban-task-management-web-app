@@ -29,7 +29,7 @@
         >
           <h3 class="font-bold text-xl">{{ task.title }}</h3>
           <p class="text-gray-500">
-            {{ completedSubtasksCount(task).value }} of
+            {{ completedSubtasksCount(task) }} of
             {{ task.subtasks.length }} subtasks
           </p>
         </div>
@@ -80,7 +80,13 @@
       <div class="self-center bg-gray-300 py-96 px-20">
         <button>+ New Column</button>
       </div>
-      <TaskDetails :task="selectedTask" @close="closeDetails" />
+      <TaskDetails
+        :columns="findBoard(selectedTask)?.columns || []"
+        :task="selectedTask"
+        :taskStore="taskStore"
+        :completedSubtasksCount="completedSubtasksCount"
+        @close="closeDetails"
+      />
     </section>
   </div>
 </template>
@@ -111,8 +117,14 @@ export default {
     const closeDetails = () => {
       selectedTask.value = null;
     };
+    const findBoard = (task) => {
+      return taskStore.boards.find((board) =>
+        board.columns.some((column) => column.tasks.some((t) => t === task))
+      );
+    };
 
     return {
+      findBoard,
       closeDetails,
       openDetails,
       taskStore,
