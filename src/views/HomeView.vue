@@ -91,7 +91,10 @@
         @close="closeDetails"
       />
       <div v-if="addTaskComponent">
-        <AddTask @close="addTaskComponent = false" />
+        <AddTask
+          :columns="findBoard(selectedTask)?.columns || []"
+          @close="addTaskComponent = false"
+        />
       </div>
     </section>
   </div>

@@ -11,6 +11,21 @@ export const useTaskStore = defineStore("taskStore", {
     totalCount: (state) => {
       return state.boards.length;
     },
+    allColumns() {
+      const columns = [];
+      this.boards.forEach((board) => {
+        board.columns.forEach((column) => {
+          if (
+            !columns.some(
+              (existingColumn) => existingColumn.name === column.name
+            )
+          ) {
+            columns.push(column);
+          }
+        });
+      });
+      return columns;
+    },
   },
   actions: {
     // async getTasks() {

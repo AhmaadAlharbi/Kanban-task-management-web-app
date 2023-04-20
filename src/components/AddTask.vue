@@ -53,33 +53,37 @@
               <img src="@/assets/images/icon-cross.svg" alt="" />
             </button>
           </div>
-          <button
-            @click="addSubtask"
-            class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
-            type="button"
+          <div class="flex justify-center my-7">
+            <button
+              @click="addSubtask"
+              class="bg-purple-500 w-full hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+              type="button"
+            >
+              Add new subtask
+            </button>
+          </div>
+
+          <select
+            class="my-10 block w-full p-2 border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            Add new subtask
-          </button>
+            <option v-for="column in taskStore.allColumns" :key="column.name">
+              {{ column.name }}
+            </option>
+          </select>
         </div>
       </form>
-
-      <button
-        @click="addSubtask"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        @click.stop="$emit('close')"
-      >
-        Close Modal
-      </button>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useTaskStore } from "@/stores/TaskStore";
 
 export default {
   setup() {
     const subtasks = ref([{ text: "" }]);
+    const taskStore = useTaskStore();
 
     const addSubtask = () => {
       subtasks.value.push({ text: "" });
@@ -90,6 +94,7 @@ export default {
     };
 
     return {
+      taskStore,
       subtasks,
       addSubtask,
       removeSubtask,
