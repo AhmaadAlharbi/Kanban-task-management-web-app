@@ -3,7 +3,10 @@
     <nav class="bg-white h-20">
       <ul class="flex justify-between items-center mt-4 px-10">
         <li class="text-2xl font-bold">Platform Launch</li>
-        <li class="bg-purple-500 py-2 px-2 text-white cursor-pointer">
+        <li
+          class="bg-purple-500 py-2 px-2 text-white cursor-pointer"
+          @click="addTaskComponent = true"
+        >
           + Add a New Task
         </li>
       </ul>
@@ -87,6 +90,9 @@
         :completedSubtasksCount="completedSubtasksCount"
         @close="closeDetails"
       />
+      <div v-if="addTaskComponent">
+        <AddTask @close="addTaskComponent = false" />
+      </div>
     </section>
   </div>
 </template>
@@ -95,8 +101,9 @@
 import { useTaskStore } from "../stores/TaskStore";
 import { onMounted, computed, ref } from "vue";
 import TaskDetails from "../components/TaskDetails.vue";
+import AddTask from "../components/AddTask.vue";
 export default {
-  components: { TaskDetails },
+  components: { TaskDetails, AddTask },
   setup() {
     const taskStore = useTaskStore();
     onMounted(() => {
@@ -123,7 +130,9 @@ export default {
       );
     };
 
+    const addTaskComponent = ref(false);
     return {
+      addTaskComponent,
       findBoard,
       closeDetails,
       openDetails,

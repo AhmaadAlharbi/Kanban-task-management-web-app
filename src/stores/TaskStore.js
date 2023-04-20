@@ -5,7 +5,7 @@ export const useTaskStore = defineStore("taskStore", {
   state: () => ({
     boards: [],
     loading: false,
-    selectedBoardIndex: 1,
+    selectedBoardIndex: 0,
   }),
   getters: {
     totalCount: (state) => {
