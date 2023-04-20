@@ -9,13 +9,12 @@
       </ul>
     </nav>
     <div v-if="taskStore.loading">Loading...</div>
-
     <section
       v-if="taskStore.boards && taskStore.boards.length > 0"
       class="container px-10 mt-5 flex justify-between"
     >
       <!-- TODO -->
-      <div v-if="selectedBoard" class="">
+      <div v-if="selectedBoard">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-sky-500"></div>
           <h1 class="text-blak">
@@ -26,6 +25,7 @@
           v-for="(task, index) in selectedBoard.columns[0].tasks"
           :key="index"
           class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
+          @click="selectedTask === task ? closeDetails() : openDetails(task)"
         >
           <h3 class="font-bold text-xl">{{ task.title }}</h3>
           <p class="text-gray-500">
@@ -34,9 +34,8 @@
           </p>
         </div>
       </div>
-
       <!-- DOING -->
-      <div v-if="selectedBoard" class="">
+      <div v-if="selectedBoard">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-purple-500"></div>
           <h1 class="text-blak">
@@ -44,9 +43,10 @@
           </h1>
         </div>
         <div
-          v-for="(task, index) in selectedBoard.columns[0].tasks"
+          v-for="(task, index) in selectedBoard.columns[1].tasks"
           :key="index"
           class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
+          @click="selectedTask === task ? closeDetails() : openDetails(task)"
         >
           <h3 class="font-bold text-xl">{{ task.title }}</h3>
           <p class="text-gray-500">
@@ -55,9 +55,8 @@
           </p>
         </div>
       </div>
-
       <!-- DONE -->
-      <div v-if="selectedBoard" class="">
+      <div v-if="selectedBoard">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-green-500"></div>
           <h1 class="text-blak">
@@ -65,9 +64,10 @@
           </h1>
         </div>
         <div
-          v-for="(task, index) in selectedBoard.columns[0].tasks"
+          v-for="(task, index) in selectedBoard.columns[2].tasks"
           :key="index"
-          class="shadow-md bg-white mt-3 py-3 px-6 w-80 mb-8"
+          class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
+          @click="selectedTask === task ? closeDetails() : openDetails(task)"
         >
           <h3 class="font-bold text-xl">{{ task.title }}</h3>
           <p class="text-gray-500">
@@ -80,15 +80,17 @@
       <div class="self-center bg-gray-300 py-96 px-20">
         <button>+ New Column</button>
       </div>
+      <TaskDetails :task="selectedTask" @close="closeDetails" />
     </section>
   </div>
 </template>
 
 <script>
 import { useTaskStore } from "../stores/TaskStore";
-import { onMounted, computed } from "vue";
-
+import { onMounted, computed, ref } from "vue";
+import TaskDetails from "../components/TaskDetails.vue";
 export default {
+  components: { TaskDetails },
   setup() {
     const taskStore = useTaskStore();
     onMounted(() => {
@@ -102,7 +104,22 @@ export default {
     const selectedBoard = computed(() => {
       return taskStore.boards[taskStore.selectedBoardIndex];
     });
-    return { taskStore, completedSubtasksCount, selectedBoard };
+    const selectedTask = ref(null);
+    const openDetails = (task) => {
+      selectedTask.value = task;
+    };
+    const closeDetails = () => {
+      selectedTask.value = null;
+    };
+
+    return {
+      closeDetails,
+      openDetails,
+      taskStore,
+      selectedTask,
+      completedSubtasksCount,
+      selectedBoard,
+    };
   },
 };
 </script>
