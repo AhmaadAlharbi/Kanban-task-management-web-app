@@ -71,6 +71,12 @@
               {{ column.name }}
             </option>
           </select>
+          <button
+            class="bg-purple-300 w-full hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Create Task
+          </button>
         </div>
       </form>
     </div>

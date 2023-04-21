@@ -80,7 +80,10 @@
         </div>
       </div>
       <!-- new column -->
-      <div class="self-center bg-gray-300 py-96 px-20">
+      <div
+        @click="editBoardComponent = !editBoardComponent"
+        class="self-center bg-gray-300 py-96 px-20"
+      >
         <button>+ New Column</button>
       </div>
       <TaskDetails
@@ -96,7 +99,10 @@
           @close="addTaskComponent = false"
         />
       </div>
-      <EditBoard />
+
+      <div v-if="editBoardComponent">
+        <EditBoard @close="editBoardComponent = false" />
+      </div>
     </section>
   </div>
 </template>
@@ -136,7 +142,10 @@ export default {
     };
 
     const addTaskComponent = ref(false);
+    const editBoardComponent = ref(false);
+
     return {
+      editBoardComponent,
       addTaskComponent,
       findBoard,
       closeDetails,

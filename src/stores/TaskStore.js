@@ -20,6 +20,14 @@ export const useTaskStore = defineStore("taskStore", {
 
       return selectedBoard.columns;
     },
+    boardName() {
+      const selectedBoard = this.boards[this.selectedBoardIndex];
+      if (!selectedBoard) {
+        return [];
+      }
+
+      return selectedBoard.name;
+    },
   },
   actions: {
     // async getTasks() {
