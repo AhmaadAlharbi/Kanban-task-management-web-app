@@ -96,6 +96,7 @@
           @close="addTaskComponent = false"
         />
       </div>
+      <EditBoard />
     </section>
   </div>
 </template>
@@ -104,9 +105,10 @@
 import { useTaskStore } from "../stores/TaskStore";
 import { onMounted, computed, ref } from "vue";
 import TaskDetails from "../components/TaskDetails.vue";
+import EditBoard from "../components/EditBoard.vue";
 import AddTask from "../components/AddTask.vue";
 export default {
-  components: { TaskDetails, AddTask },
+  components: { TaskDetails, AddTask, EditBoard },
   setup() {
     const taskStore = useTaskStore();
     onMounted(() => {

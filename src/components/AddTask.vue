@@ -63,8 +63,9 @@
             </button>
           </div>
 
+          <label>Status</label>
           <select
-            class="my-10 block w-full p-2 border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="my-3 block w-full p-2 border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option v-for="column in taskStore.allColumns" :key="column.name">
               {{ column.name }}

@@ -12,19 +12,13 @@ export const useTaskStore = defineStore("taskStore", {
       return state.boards.length;
     },
     allColumns() {
-      const columns = [];
-      this.boards.forEach((board) => {
-        board.columns.forEach((column) => {
-          if (
-            !columns.some(
-              (existingColumn) => existingColumn.name === column.name
-            )
-          ) {
-            columns.push(column);
-          }
-        });
-      });
-      return columns;
+      const selectedBoard = this.boards[this.selectedBoardIndex];
+
+      if (!selectedBoard) {
+        return [];
+      }
+
+      return selectedBoard.columns;
     },
   },
   actions: {
