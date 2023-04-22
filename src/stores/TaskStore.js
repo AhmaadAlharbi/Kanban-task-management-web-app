@@ -49,6 +49,99 @@ export const useTaskStore = defineStore("taskStore", {
       }
       this.loading = false;
     },
+    // async addTasks(boardName, columnName, task) {
+    //   let targetBoard = this.boards.find((board) => board.name === boardName);
+
+    //   if (targetBoard) {
+    //     let targetColumn = targetBoard.columns.find(
+    //       (column) => column.name === columnName
+    //     );
+
+    //     if (targetColumn) {
+    //       targetColumn.tasks.push(task);
+
+    //       const res = await fetch("http://localhost:3000/boards", {
+    //         method: "POST",
+    //         body: JSON.stringify(task),
+    //         headers: { "Content-Type": "application/json" },
+    //       });
+
+    //       if (res.error) {
+    //         console.log(res.error);
+    //       }
+    //     } else {
+    //       console.log(
+    //         `Column with name "${columnName}" not found in the "${boardName}" board.`
+    //       );
+    //     }
+    //   } else {
+    //     console.log(`Board with name "${boardName}" not found.`);
+    //   }
+    // },
+    // async addTasks(boardName, columnName, task) {
+    //   let targetBoard = this.boards.find((board) => board.name === boardName);
+
+    //   if (targetBoard) {
+    //     let targetColumn = targetBoard.columns.find(
+    //       (column) => column.name === columnName
+    //     );
+
+    //     if (targetColumn) {
+    //       targetColumn.tasks.push(task);
+
+    //       const res = await fetch("http://localhost:3000/boards", {
+    //         method: "POST",
+    //         body: JSON.stringify(task),
+    //         headers: { "Content-Type": "application/json" },
+    //       });
+
+    //       if (res.error) {
+    //         console.log(res.error);
+    //       }
+    //     } else {
+    //       console.log(
+    //         `Column with name "${columnName}" not found in the "${boardName}" board.`
+    //       );
+    //     }
+    //   } else {
+    //     console.log(`Board with name "${boardName}" not found.`);
+    //   }
+    // },
+    async addTasks(boardName, columnName, task) {
+      let targetBoard = this.boards.find((board) => board.name === boardName);
+
+      if (targetBoard) {
+        let targetColumn = targetBoard.columns.find(
+          (column) => column.name === columnName
+        );
+
+        if (targetColumn) {
+          targetColumn.tasks.push(task);
+
+          try {
+            const res = await fetch("http://localhost:3000/boards", {
+              method: "POST",
+              body: JSON.stringify(task),
+              headers: { "Content-Type": "application/json" },
+            });
+
+            if (res.ok) {
+              console.log("Task added successfully");
+            } else {
+              console.log("Failed to add task");
+            }
+          } catch (error) {
+            console.log("An error occurred:", error);
+          }
+        } else {
+          console.log(
+            `Column with name "${columnName}" not found in the "${boardName}" board.`
+          );
+        }
+      } else {
+        console.log(`Board with name "${boardName}" not found.`);
+      }
+    },
 
     setSelectedBoardIndex(index) {
       this.selectedBoardIndex = index;

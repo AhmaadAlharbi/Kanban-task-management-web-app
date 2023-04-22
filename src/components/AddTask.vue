@@ -5,7 +5,7 @@
   >
     <div class="bg-white w-11/12 md:w-1/2 lg:w-1/3 p-6 rounded-lg">
       <h2 class="text-2xl font-bold mb-4">Add a New Task</h2>
-      <form class="max-w-md mx-auto">
+      <form @submit.prevent="handleSubmit" class="max-w-md mx-auto">
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="title">
             Title
@@ -15,6 +15,7 @@
             id="title"
             type="text"
             placeholder="Enter title"
+            v-model="title"
           />
         </div>
         <div class="mb-4">
@@ -25,6 +26,7 @@
             class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="description"
             placeholder="Enter description"
+            v-model="description"
           ></textarea>
         </div>
         <div class="mb-4">
@@ -42,6 +44,7 @@
               class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               :id="'subtask-' + index"
               type="text"
+              v-model="subtask.text"
               :placeholder="'Enter subtask ' + (index + 1)"
             />
 
@@ -73,7 +76,6 @@
           </select>
           <button
             class="bg-purple-300 w-full hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
-            type="submit"
           >
             Create Task
           </button>
@@ -91,6 +93,9 @@ export default {
   setup() {
     const subtasks = ref([{ text: "" }]);
     const taskStore = useTaskStore();
+    const title = ref("");
+    const description = ref("");
+    const status = ref("");
 
     const addSubtask = () => {
       subtasks.value.push({ text: "" });
@@ -99,8 +104,24 @@ export default {
     const removeSubtask = (index) => {
       subtasks.value.splice(index, 1);
     };
+    const handleSubmit = () => {
+      const newTask = {
+        title: title.value,
+        description: description.value,
+        status: status.value,
+        subtasks: subtasks.value.map((subtask) => ({
+          title: subtask,
+          isCompleted: false,
+        })),
+      };
+      taskStore.addTasks("Platform Launch", "Todo", newTask);
+    };
 
     return {
+      title,
+      description,
+      status,
+      handleSubmit,
       taskStore,
       subtasks,
       addSubtask,

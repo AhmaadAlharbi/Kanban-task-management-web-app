@@ -20,7 +20,7 @@
       <div v-if="selectedBoard">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-sky-500"></div>
-          <h1 class="text-blak">
+          <h1 class="text-black">
             TODO ({{ taskStore.boards[0].columns[0].tasks.length }})
           </h1>
         </div>
@@ -41,7 +41,7 @@
       <div v-if="selectedBoard">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-purple-500"></div>
-          <h1 class="text-blak">
+          <h1 class="text-black">
             DOING ({{ taskStore.boards[0].columns[1].tasks.length }})
           </h1>
         </div>
@@ -62,7 +62,7 @@
       <div v-if="selectedBoard">
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-green-500"></div>
-          <h1 class="text-blak">
+          <h1 class="text-black">
             DONE ({{ taskStore.boards[0].columns[2].tasks.length }})
           </h1>
         </div>
@@ -82,7 +82,7 @@
       <!-- new column -->
       <div
         @click="editBoardComponent = !editBoardComponent"
-        class="self-center bg-gray-300 py-96 px-20"
+        class="hidden self-center bg-gray-300 py-96 px-20"
       >
         <button>+ New Column</button>
       </div>
