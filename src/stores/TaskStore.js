@@ -107,40 +107,39 @@ export const useTaskStore = defineStore("taskStore", {
     //     console.log(`Board with name "${boardName}" not found.`);
     //   }
     // },
+
     async addTasks(boardName, columnName, task) {
-      let targetBoard = this.boards.find((board) => board.name === boardName);
+      // Fetch and update the boards in the store
+      await this.getBoards();
+      const targetBoard = this.boards.find((board) => board.name === boardName);
 
-      if (targetBoard) {
-        let targetColumn = targetBoard.columns.find(
-          (column) => column.name === columnName
-        );
-
-        if (targetColumn) {
-          targetColumn.tasks.push(task);
-
-          try {
-            const res = await fetch("http://localhost:3000/boards", {
-              method: "POST",
-              body: JSON.stringify(task),
-              headers: { "Content-Type": "application/json" },
-            });
-
-            if (res.ok) {
-              console.log("Task added successfully");
-            } else {
-              console.log("Failed to add task");
-            }
-          } catch (error) {
-            console.log("An error occurred:", error);
-          }
-        } else {
-          console.log(
-            `Column with name "${columnName}" not found in the "${boardName}" board.`
-          );
-        }
-      } else {
-        console.log(`Board with name "${boardName}" not found.`);
+      if (!targetBoard) {
+        console.error(`Board not found: ${boardName}`);
+        return;
       }
+
+      const targetColumn = targetBoard.columns.find(
+        (column) => column.name === columnName
+      );
+
+      if (!targetColumn) {
+        console.error(`Column not found: ${columnName}`);
+        return;
+      }
+
+      // Define or import generateUniqueId function
+      const generateUniqueId = () => {
+        return (id = Math.floor(Math.random() * 1000000));
+      };
+
+      const newTask = { ...task, id: generateUniqueId() };
+      targetColumn.tasks.push(newTask);
+
+      await fetch(`http://localhost:3000/boards/${targetBoard.id}`, {
+        method: "PUT",
+        body: JSON.stringify(targetBoard),
+        headers: { "Content-Type": "application/json" },
+      });
     },
 
     setSelectedBoardIndex(index) {

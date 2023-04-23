@@ -136,8 +136,12 @@ export default {
       selectedTask.value = null;
     };
     const findBoard = (task) => {
-      return taskStore.boards.find((board) =>
-        board.columns.some((column) => column.tasks.some((t) => t === task))
+      return taskStore.boards.find(
+        (board) =>
+          board.columns &&
+          board.columns.some(
+            (column) => column.tasks && column.tasks.some((t) => t === task)
+          )
       );
     };
 
