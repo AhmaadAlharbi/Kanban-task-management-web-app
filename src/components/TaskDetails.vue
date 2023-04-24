@@ -13,12 +13,26 @@
       <p>{{ completedCount }} of {{ task.subtasks.length }}</p>
       <div
         class="bg-gray-200 py-4 mb-3 mt-3"
-        v-for="sub in task.subtasks"
+        v-for="(sub, index) in task.subtasks"
         :key="sub"
       >
         <input class="mx-2" type="checkbox" />
-        <label class="">{{ sub.title }}</label>
+        <label>{{ sub.title }}</label>
+        <button
+          @click="
+            taskStore.deleteSubtask(
+              task.boardId,
+              task.status,
+              task.id,
+              subtask.id
+            )
+          "
+          class="bg-red-400 px-4 py-2 rounded-full"
+        >
+          DELETE
+        </button>
       </div>
+
       <!-- current status -->
       <div>
         <select class="mb-3" v-model="task.status">
@@ -27,6 +41,13 @@
           </option>
         </select>
       </div>
+      <button
+        @click="taskStore.deleteTask(taskStore.boardName, task.status, task.id)"
+        class="bg-red-400 px-4 py-2 rounded-full"
+      >
+        DELETE
+      </button>
+
       <button
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         @click.stop="$emit('close')"
@@ -39,10 +60,13 @@
 
 <script>
 import { computed } from "vue";
+import { useTaskStore } from "@/stores/TaskStore";
 
 export default {
   props: ["task", "completedSubtasksCount", "taskStore", "columns"],
   setup(props) {
+    const taskStore = useTaskStore();
+
     const completedCount = computed(() => {
       return props.completedSubtasksCount(props.task).value;
     });

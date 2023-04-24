@@ -9,7 +9,7 @@
         <nav>
           <ul class="space-y-4 px-3 cursor-pointer">
             <li
-              v-for="(board, index) in taskStore.boards"
+              v-for="(board, index) in taskStore.tasks"
               :key="index"
               class="p-2 rounded-2xl"
               :class="

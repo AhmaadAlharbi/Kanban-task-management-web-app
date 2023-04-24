@@ -68,6 +68,7 @@
 
           <label>Status</label>
           <select
+            v-model="status"
             class="my-3 block w-full p-2 border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option v-for="column in taskStore.allColumns" :key="column.name">
@@ -110,11 +111,12 @@ export default {
         description: description.value,
         status: status.value,
         subtasks: subtasks.value.map((subtask) => ({
+          id: Math.floor(Math.random() * 1000000),
           title: subtask,
           isCompleted: false,
         })),
       };
-      taskStore.addTasks("Platform Launch", "Todo", newTask);
+      taskStore.addTasks(taskStore.boardName, status.value, newTask);
     };
 
     return {

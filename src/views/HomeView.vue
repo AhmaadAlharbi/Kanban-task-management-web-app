@@ -11,157 +11,47 @@
         </li>
       </ul>
     </nav>
-    <div v-if="taskStore.loading">Loading...</div>
-    <section
-      v-if="taskStore.boards && taskStore.boards.length > 0"
-      class="container px-10 mt-5 flex justify-between"
-    >
+    <div v-if="taskStore.tasks">
       <!-- TODO -->
-      <div v-if="selectedBoard">
+      <div>
         <div class="flex space-x-2">
           <div class="h-6 w-6 rounded-full bg-sky-500"></div>
-          <h1 class="text-black">
-            TODO ({{ taskStore.boards[0].columns[0].tasks.length }})
-          </h1>
+          <h1 class="text-black">TODO ()</h1>
         </div>
+      </div>
+      <div v-if="taskStore.tasks && taskStore.tasks[0]">
         <div
-          v-for="(task, index) in selectedBoard.columns[0].tasks"
-          :key="index"
+          v-for="(column, columnIndex) in taskStore.tasks[0].columns"
+          :key="columnIndex"
           class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
-          @click="selectedTask === task ? closeDetails() : openDetails(task)"
         >
-          <h3 class="font-bold text-xl">{{ task.title }}</h3>
-          <p class="text-gray-500">
-            {{ completedSubtasksCount(task) }} of
-            {{ task.subtasks.length }} subtasks
-          </p>
+          <div class="flex flex-col space-x-2">
+            <h1 class="text-black">{{ column.title }}</h1>
+            <div v-if="column.subtasks">
+              {{ taskStore.getCompletedSubtaskCount(column.subtasks) }} of
+              {{ column.subtasks.length }} subtasks
+            </div>
+          </div>
         </div>
       </div>
-      <!-- DOING -->
-      <div v-if="selectedBoard">
-        <div class="flex space-x-2">
-          <div class="h-6 w-6 rounded-full bg-purple-500"></div>
-          <h1 class="text-black">
-            DOING ({{ taskStore.boards[0].columns[1].tasks.length }})
-          </h1>
-        </div>
-        <div
-          v-for="(task, index) in selectedBoard.columns[1].tasks"
-          :key="index"
-          class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
-          @click="selectedTask === task ? closeDetails() : openDetails(task)"
-        >
-          <h3 class="font-bold text-xl">{{ task.title }}</h3>
-          <p class="text-gray-500">
-            {{ completedSubtasksCount(task).value }} of
-            {{ task.subtasks.length }} subtasks
-          </p>
-        </div>
-      </div>
-      <!-- DONE -->
-      <div v-if="selectedBoard">
-        <div class="flex space-x-2">
-          <div class="h-6 w-6 rounded-full bg-green-500"></div>
-          <h1 class="text-black">
-            DONE ({{ taskStore.boards[0].columns[2].tasks.length }})
-          </h1>
-        </div>
-        <div
-          v-for="(task, index) in selectedBoard.columns[2].tasks"
-          :key="index"
-          class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
-          @click="selectedTask === task ? closeDetails() : openDetails(task)"
-        >
-          <h3 class="font-bold text-xl">{{ task.title }}</h3>
-          <p class="text-gray-500">
-            {{ completedSubtasksCount(task).value }} of
-            {{ task.subtasks.length }} subtasks
-          </p>
-        </div>
-      </div>
-      <!-- new column -->
-      <div
-        @click="editBoardComponent = !editBoardComponent"
-        class="hidden self-center bg-gray-300 py-96 px-20"
-      >
-        <button>+ New Column</button>
-      </div>
-      <TaskDetails
-        :columns="findBoard(selectedTask)?.columns || []"
-        :task="selectedTask"
-        :taskStore="taskStore"
-        :completedSubtasksCount="completedSubtasksCount"
-        @close="closeDetails"
-      />
-      <div v-if="addTaskComponent">
-        <AddTask
-          :columns="findBoard(selectedTask)?.columns || []"
-          @close="addTaskComponent = false"
-        />
-      </div>
-
-      <div v-if="editBoardComponent">
-        <EditBoard @close="editBoardComponent = false" />
-      </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { useTaskStore } from "../stores/TaskStore";
-import { onMounted, computed, ref } from "vue";
-import TaskDetails from "../components/TaskDetails.vue";
-import EditBoard from "../components/EditBoard.vue";
-import AddTask from "../components/AddTask.vue";
-export default {
-  components: { TaskDetails, AddTask, EditBoard },
+import { computed, onMounted } from "vue";
+import getTasks from "../composables/getTasks";
+
+export default defineComponent({
   setup() {
     const taskStore = useTaskStore();
-    onMounted(() => {
-      taskStore.getBoards();
-    });
-    const completedSubtasksCount = (task) => {
-      return computed(() => {
-        return task.subtasks.filter((subtask) => subtask.isCompleted).length;
-      });
-    };
-    const selectedBoard = computed(() => {
-      return taskStore.boards[taskStore.selectedBoardIndex];
-    });
-    const selectedTask = ref(null);
-    const openDetails = (task) => {
-      selectedTask.value = task;
-    };
-    const closeDetails = () => {
-      selectedTask.value = null;
-    };
-    const findBoard = (task) => {
-      return taskStore.boards.find(
-        (board) =>
-          board.columns &&
-          board.columns.some(
-            (column) => column.tasks && column.tasks.some((t) => t === task)
-          )
-      );
-    };
+    taskStore.getTasks();
 
-    const addTaskComponent = ref(false);
-    const editBoardComponent = ref(false);
-
-    return {
-      editBoardComponent,
-      addTaskComponent,
-      findBoard,
-      closeDetails,
-      openDetails,
-      taskStore,
-      selectedTask,
-      completedSubtasksCount,
-      selectedBoard,
-    };
+    // const { tasks, error, load } = getTasks();
+    // load();
+    return { taskStore };
   },
-};
+});
 </script>
-
-<style>
-</style>

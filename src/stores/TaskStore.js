@@ -1,149 +1,32 @@
-// src/stores/TaskStore.js
 import { defineStore } from "pinia";
+import { projectFirestore } from "../firebase/config";
 
 export const useTaskStore = defineStore("taskStore", {
   state: () => ({
     boards: [],
     loading: false,
     selectedBoardIndex: 0,
+    tasks: [], // add a new property to store the tasks
   }),
   getters: {
-    totalCount: (state) => {
-      return state.boards.length;
-    },
-    allColumns() {
-      const selectedBoard = this.boards[this.selectedBoardIndex];
-
-      if (!selectedBoard) {
-        return [];
-      }
-
-      return selectedBoard.columns;
-    },
-    boardName() {
-      const selectedBoard = this.boards[this.selectedBoardIndex];
-      if (!selectedBoard) {
-        return [];
-      }
-
-      return selectedBoard.name;
+    getCompletedSubtaskCount: (state) => (subtasks) => {
+      return subtasks.filter((subtask) => subtask.isCompleted).length;
     },
   },
+
   actions: {
-    // async getTasks() {
-    //   this.loading = true;
-    //   // get data from json file using json server
-    //   const res = await fetch("http://localhost:3000/boards");
-    //   const data = await res.json();
-    //   this.boards = data;
-    //   this.loading = false;
-    // },
-    async getBoards() {
-      this.loading = true;
+    async getTasks() {
       try {
-        const response = await fetch("http://localhost:3000/boards");
-        const data = await response.json();
-        this.boards = data;
+        const querySnapshot = await projectFirestore.collection("tasks").get();
+        const tasks = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          data.id = doc.id;
+          return data;
+        });
+        this.tasks = tasks;
       } catch (error) {
-        console.error("Error fetching boards:", error);
+        console.error("Error loading tasks:", error);
       }
-      this.loading = false;
-    },
-    // async addTasks(boardName, columnName, task) {
-    //   let targetBoard = this.boards.find((board) => board.name === boardName);
-
-    //   if (targetBoard) {
-    //     let targetColumn = targetBoard.columns.find(
-    //       (column) => column.name === columnName
-    //     );
-
-    //     if (targetColumn) {
-    //       targetColumn.tasks.push(task);
-
-    //       const res = await fetch("http://localhost:3000/boards", {
-    //         method: "POST",
-    //         body: JSON.stringify(task),
-    //         headers: { "Content-Type": "application/json" },
-    //       });
-
-    //       if (res.error) {
-    //         console.log(res.error);
-    //       }
-    //     } else {
-    //       console.log(
-    //         `Column with name "${columnName}" not found in the "${boardName}" board.`
-    //       );
-    //     }
-    //   } else {
-    //     console.log(`Board with name "${boardName}" not found.`);
-    //   }
-    // },
-    // async addTasks(boardName, columnName, task) {
-    //   let targetBoard = this.boards.find((board) => board.name === boardName);
-
-    //   if (targetBoard) {
-    //     let targetColumn = targetBoard.columns.find(
-    //       (column) => column.name === columnName
-    //     );
-
-    //     if (targetColumn) {
-    //       targetColumn.tasks.push(task);
-
-    //       const res = await fetch("http://localhost:3000/boards", {
-    //         method: "POST",
-    //         body: JSON.stringify(task),
-    //         headers: { "Content-Type": "application/json" },
-    //       });
-
-    //       if (res.error) {
-    //         console.log(res.error);
-    //       }
-    //     } else {
-    //       console.log(
-    //         `Column with name "${columnName}" not found in the "${boardName}" board.`
-    //       );
-    //     }
-    //   } else {
-    //     console.log(`Board with name "${boardName}" not found.`);
-    //   }
-    // },
-
-    async addTasks(boardName, columnName, task) {
-      // Fetch and update the boards in the store
-      await this.getBoards();
-      const targetBoard = this.boards.find((board) => board.name === boardName);
-
-      if (!targetBoard) {
-        console.error(`Board not found: ${boardName}`);
-        return;
-      }
-
-      const targetColumn = targetBoard.columns.find(
-        (column) => column.name === columnName
-      );
-
-      if (!targetColumn) {
-        console.error(`Column not found: ${columnName}`);
-        return;
-      }
-
-      // Define or import generateUniqueId function
-      const generateUniqueId = () => {
-        return (id = Math.floor(Math.random() * 1000000));
-      };
-
-      const newTask = { ...task, id: generateUniqueId() };
-      targetColumn.tasks.push(newTask);
-
-      await fetch(`http://localhost:3000/boards/${targetBoard.id}`, {
-        method: "PUT",
-        body: JSON.stringify(targetBoard),
-        headers: { "Content-Type": "application/json" },
-      });
-    },
-
-    setSelectedBoardIndex(index) {
-      this.selectedBoardIndex = index;
     },
   },
 });
