@@ -8,7 +8,7 @@
         </p>
         <nav>
           <ul class="space-y-4 px-3 cursor-pointer">
-            <li
+            <!-- <li
               v-for="(board, index) in taskStore.tasks"
               :key="index"
               class="p-2 rounded-2xl"
@@ -20,7 +20,8 @@
               @click="changeActiveBoard(index)"
             >
               {{ board.name }}
-            </li>
+            </li> -->
+            <li v-for="name in taskStore.boardNames" :key="name">{{ name }}</li>
 
             <li class="">+ Create a New Board</li>
           </ul>
@@ -61,6 +62,7 @@ import { ref } from "vue";
 export default {
   setup() {
     const taskStore = useTaskStore();
+    taskStore.fetchBoards();
     const activeBoardIndex = ref(0);
 
     const changeActiveBoard = (index) => {

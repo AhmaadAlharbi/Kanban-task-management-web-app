@@ -4,29 +4,17 @@ import { projectFirestore } from "../firebase/config";
 export const useTaskStore = defineStore("taskStore", {
   state: () => ({
     boards: [],
-    loading: false,
-    selectedBoardIndex: 0,
-    tasks: [], // add a new property to store the tasks
   }),
   getters: {
-    getCompletedSubtaskCount: (state) => (subtasks) => {
-      return subtasks.filter((subtask) => subtask.isCompleted).length;
-    },
+    boardNames: (state) => state.boards.map((board) => board.name),
+    completedSubTasks: (state) =>
+      state.boards.filter((board) => board.subtask.isCompleted),
   },
 
   actions: {
-    async getTasks() {
-      try {
-        const querySnapshot = await projectFirestore.collection("tasks").get();
-        const tasks = querySnapshot.docs.map((doc) => {
-          const data = doc.data();
-          data.id = doc.id;
-          return data;
-        });
-        this.tasks = tasks;
-      } catch (error) {
-        console.error("Error loading tasks:", error);
-      }
+    async fetchBoards() {
+      const res = await projectFirestore.collection("Boards").get();
+      this.boards = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
     },
   },
 });

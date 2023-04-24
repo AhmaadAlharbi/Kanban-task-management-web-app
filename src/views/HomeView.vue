@@ -11,25 +11,48 @@
         </li>
       </ul>
     </nav>
-    <div v-if="taskStore.tasks">
-      <!-- TODO -->
-      <div>
-        <div class="flex space-x-2">
-          <div class="h-6 w-6 rounded-full bg-sky-500"></div>
-          <h1 class="text-black">TODO ()</h1>
-        </div>
+    <div>
+      <div v-if="documents.length > 0">
+        <h1 class="bg-red-200">Documents</h1>
+        {{ documents }}
       </div>
-      <div v-if="taskStore.tasks && taskStore.tasks[0]">
-        <div
-          v-for="(column, columnIndex) in taskStore.tasks[0].columns"
-          :key="columnIndex"
-          class="shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
-        >
-          <div class="flex flex-col space-x-2">
-            <h1 class="text-black">{{ column.title }}</h1>
-            <div v-if="column.subtasks">
-              {{ taskStore.getCompletedSubtaskCount(column.subtasks) }} of
-              {{ column.subtasks.length }} subtasks
+      <div v-if="columns">
+        <h1 class="bg-red-400">Columns</h1>
+        {{ columns }}
+      </div>
+      <div v-if="cards">
+        <h1 class="bg-red-600">Cards</h1>
+        {{ cards }}
+      </div>
+      <div v-if="subtasks">
+        <h1 class="bg-red-900">Subtasjs</h1>
+        {{ subtasks }}
+      </div>
+
+      <div v-else-if="error">{{ error }}</div>
+      <div v-else>Loading...</div>
+    </div>
+    <!-- todo -->
+    <div v-if="columns.length > 0">
+      <div class="flex justify-around">
+        <div class="flex flex-col" v-for="col in columns" :key="col.id">
+          <h1 class="bg-gray-300 px-2">{{ col.name }} - {{ col.id }}</h1>
+          <div v-if="cards">
+            <div
+              class="flex flex-col shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
+              v-for="card in cards"
+              :key="card.id"
+            >
+              <div v-if="card.column_id == col.id">
+                <p class="font-bold" v-if="card">{{ card.title }}</p>
+                <!-- subtasks -->
+                <div v-for="sub in subtasks" :key="sub.id">
+                  <p class="text-gray-500" v-if="card.id === sub.card_id">
+                    {{ completedSubtasks.length }} - of {{ subtasks.length }}
+                  </p>
+                  <p class="text-gray-500" v-else>No subtasks</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -40,18 +63,46 @@
 
 <script>
 import { defineComponent } from "vue";
-import { useTaskStore } from "../stores/TaskStore";
 import { computed, onMounted } from "vue";
-import getTasks from "../composables/getTasks";
-
+import getCollection from "../composables/getCollection";
+import { useTaskStore } from "../stores/TaskStore";
 export default defineComponent({
   setup() {
+    const { documents, error, load } = getCollection("Boards");
     const taskStore = useTaskStore();
-    taskStore.getTasks();
+    const {
+      documents: columns,
+      error: eColumns,
+      load: loadColumns,
+    } = getCollection("columns");
+    const {
+      documents: cards,
+      error: eCards,
+      load: loadCards,
+    } = getCollection("cards");
+    const {
+      documents: subtasks,
+      error: eSubtasks,
+      load: loadSubtasks,
+    } = getCollection("subtasks");
 
-    // const { tasks, error, load } = getTasks();
-    // load();
-    return { taskStore };
+    load();
+    loadColumns();
+    loadCards();
+    loadSubtasks();
+    const completedSubtasks = computed(() =>
+      subtasks.value.filter((subtask) => subtask.isCompleted)
+    );
+    loadSubtasks;
+    return {
+      taskStore,
+      subtasks,
+      error,
+      documents,
+      columns,
+      cards,
+      completedSubtasks,
+    };
   },
 });
 </script>
