@@ -113,12 +113,16 @@ export default {
       subtasks.value.splice(index, 1);
     };
     const handleSubmit = () => {
-      taskStore.addCard(
-        selectedColumnId.value,
-        title.value,
-        description.value,
-        subtasks.value
-      );
+      taskStore
+        .addCard(
+          selectedColumnId.value,
+          title.value,
+          description.value,
+          subtasks.value
+        )
+        .then(() => {
+          location.reload(); // reload the page after the task is added
+        });
     };
 
     return {
