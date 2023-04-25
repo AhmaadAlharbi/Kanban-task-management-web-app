@@ -44,7 +44,7 @@
               class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               :id="'subtask-' + index"
               type="text"
-              v-model="subtask.text"
+              v-model="subtask.title"
               :placeholder="'Enter subtask ' + (index + 1)"
             />
 
@@ -68,9 +68,15 @@
 
           <label>Status</label>
           <select
+            v-model="selectedColumnId"
             class="bg-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
           >
-            <option v-for="col in taskStore.columns" :key="col.id">
+            <option value="" disabled>Select a column</option>
+            <option
+              v-for="col in taskStore.columns"
+              :key="col.id"
+              :value="col.id"
+            >
               {{ col.name }}
             </option>
           </select>
@@ -91,35 +97,32 @@ import { useTaskStore } from "@/stores/TaskStore";
 
 export default {
   setup() {
-    const subtasks = ref([{ text: "" }]);
+    const subtasks = ref([{ title: "", isCompleted: false }]);
     const taskStore = useTaskStore();
     taskStore.fetchColumns();
     const title = ref("");
     const description = ref("");
     const status = ref("");
+    const selectedColumnId = ref("");
 
     const addSubtask = () => {
-      subtasks.value.push({ text: "" });
+      subtasks.value.push({ title: "", isCompleted: false });
     };
 
     const removeSubtask = (index) => {
       subtasks.value.splice(index, 1);
     };
     const handleSubmit = () => {
-      const newTask = {
-        title: title.value,
-        description: description.value,
-        status: status.value,
-        subtasks: subtasks.value.map((subtask) => ({
-          id: Math.floor(Math.random() * 1000000),
-          title: subtask,
-          isCompleted: false,
-        })),
-      };
-      taskStore.addTasks(taskStore.boardName, status.value, newTask);
+      taskStore.addCard(
+        selectedColumnId.value,
+        title.value,
+        description.value,
+        subtasks.value
+      );
     };
 
     return {
+      selectedColumnId,
       title,
       description,
       status,

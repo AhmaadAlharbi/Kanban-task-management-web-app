@@ -29,7 +29,7 @@
           v-if="sub.card_id === selectedCard.id"
           class="bg-gray-200 p-2 my-2 rounded-lg flex items-center"
         >
-          <input type="checkbox" class="mr-2" />
+          <input v-model="sub.isCompleted" type="checkbox" class="mr-2" />
           <label class="flex-1">{{ sub.title }}</label>
         </div>
       </div>
@@ -38,8 +38,17 @@
         <select
           class="bg-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
         >
-          <option v-for="col in taskStore.columns" :key="col.id">
-            {{ col.name }}
+          <option
+            v-for="(col, index) in taskStore.columns"
+            :key="col.id"
+            :selected="col.id === selectedCard.column_id"
+          >
+            {{
+              index === 0
+                ? taskStore.columns.find((c) => c.id === selectedCard.column_id)
+                    .name
+                : col.name
+            }}
           </option>
         </select>
       </div>
@@ -64,6 +73,7 @@ export default {
   setup() {
     const taskStore = useTaskStore();
     taskStore.fetchColumns();
+
     return { taskStore };
   },
 };
