@@ -55,5 +55,17 @@ export const useTaskStore = defineStore("taskStore", {
         console.error("Error adding card:", error);
       }
     },
+    async deleteSubtask(subtaskId) {
+      try {
+        await projectFirestore.collection("subtasks").doc(subtaskId).delete();
+        const index = this.subtasks.findIndex(
+          (subtask) => subtask.id === subtaskId
+        );
+        this.subtasks.splice(index, 1);
+        location.reload();
+      } catch (error) {
+        console.error("Error deleting subtask:", error);
+      }
+    },
   },
 });

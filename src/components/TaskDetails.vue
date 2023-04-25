@@ -30,7 +30,16 @@
           class="bg-gray-200 p-2 my-2 rounded-lg flex items-center"
         >
           <input v-model="sub.isCompleted" type="checkbox" class="mr-2" />
-          <label class="flex-1">{{ sub.title }}</label>
+          <div class="flex-1 flex justify-between items-center">
+            <h1>{{ sub.title }}</h1>
+            <p>
+              <i
+                class="fa fa-trash-o cursor-pointer"
+                style="font-size: 36px"
+                @click="taskStore.deleteSubtask(sub.id)"
+              ></i>
+            </p>
+          </div>
         </div>
       </div>
       <div class="mb-4">
