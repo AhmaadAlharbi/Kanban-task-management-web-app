@@ -41,7 +41,11 @@
           <h1 class="bg-gray-300 px-2">{{ col.name }} - {{ col.id }}</h1>
           <div v-if="cards">
             <!-- Loop through the cards -->
-            <div v-for="card in cards" :key="card.id">
+            <div
+              v-for="card in cards"
+              :key="card.id"
+              @click="showTaskDetails(card)"
+            >
               <!-- Only display the card if it belongs to the current column -->
               <div v-if="card.column_id === col.id">
                 <div
@@ -72,19 +76,34 @@
           </div>
         </div>
       </div>
+      <div v-if="showCardDetails">
+        <TaskDetails
+          :selectedCard="selectedCard"
+          :subtasks="subtasks"
+          @close="showCardDetails = false"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { computed, onMounted } from "vue";
 import getCollection from "../composables/getCollection";
 import { useTaskStore } from "../stores/TaskStore";
+import TaskDetails from "../components/TaskDetails.vue";
 export default defineComponent({
+  components: { TaskDetails },
   setup() {
     const { documents, error, load } = getCollection("Boards");
     const taskStore = useTaskStore();
+    const selectedCard = ref(null);
+    const showCardDetails = ref(false);
+    const showTaskDetails = (card) => {
+      selectedCard.value = card;
+      showCardDetails.value = true;
+    };
     const {
       documents: columns,
       error: eColumns,
@@ -110,6 +129,9 @@ export default defineComponent({
     );
     loadSubtasks;
     return {
+      showTaskDetails,
+      selectedCard,
+      showCardDetails,
       taskStore,
       subtasks,
       error,
