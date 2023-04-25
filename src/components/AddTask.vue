@@ -68,11 +68,10 @@
 
           <label>Status</label>
           <select
-            v-model="status"
-            class="my-3 block w-full p-2 border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="bg-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
           >
-            <option v-for="column in taskStore.allColumns" :key="column.name">
-              {{ column.name }}
+            <option v-for="col in taskStore.columns" :key="col.id">
+              {{ col.name }}
             </option>
           </select>
           <button
@@ -94,6 +93,7 @@ export default {
   setup() {
     const subtasks = ref([{ text: "" }]);
     const taskStore = useTaskStore();
+    taskStore.fetchColumns();
     const title = ref("");
     const description = ref("");
     const status = ref("");

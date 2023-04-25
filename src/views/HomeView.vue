@@ -5,12 +5,15 @@
         <li class="text-2xl font-bold">Platform Launch</li>
         <li
           class="bg-purple-500 py-2 px-2 text-white cursor-pointer"
-          @click="addTaskComponent = true"
+          @click="addTask = true"
         >
           + Add a New Task
         </li>
       </ul>
     </nav>
+    <div v-if="addTask">
+      <AddTask @close="addTask = false" />
+    </div>
     <!-- <div>
       <div v-if="documents.length > 0">
         <h1 class="bg-red-200">Documents</h1>
@@ -93,13 +96,15 @@ import { computed, onMounted } from "vue";
 import getCollection from "../composables/getCollection";
 import { useTaskStore } from "../stores/TaskStore";
 import TaskDetails from "../components/TaskDetails.vue";
+import AddTask from "../components/AddTask.vue";
 export default defineComponent({
-  components: { TaskDetails },
+  components: { TaskDetails, AddTask },
   setup() {
     const { documents, error, load } = getCollection("Boards");
     const taskStore = useTaskStore();
     const selectedCard = ref(null);
     const showCardDetails = ref(false);
+    const addTask = ref(false);
     const showTaskDetails = (card) => {
       selectedCard.value = card;
       showCardDetails.value = true;
@@ -129,6 +134,7 @@ export default defineComponent({
     );
     loadSubtasks;
     return {
+      addTask,
       showTaskDetails,
       selectedCard,
       showCardDetails,
