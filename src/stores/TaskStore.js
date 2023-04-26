@@ -45,8 +45,21 @@ export const useTaskStore = defineStore("taskStore", {
         id: doc.id,
       }));
     },
-    async addCard(columnId, title, description, subtasks = []) {
+    async fetchSubtasks(cardId) {
+      if (!cardId) {
+        return;
+      }
+      const subtasksRef = projectFirestore.collection("subtasks");
+      const subtasksQuery = subtasksRef.where("card_id", "==", cardId);
+      const subtasksSnapshot = await subtasksQuery.get();
+      this.subtasks = subtasksSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+    },
+    async addCard(boardId, columnId, title, description, subtasks = []) {
       const newCard = {
+        board_id: boardId,
         column_id: columnId,
         title: title,
         description: description, // convert description to a string

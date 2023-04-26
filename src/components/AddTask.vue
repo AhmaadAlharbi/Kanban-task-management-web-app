@@ -99,7 +99,9 @@ export default {
   setup() {
     const subtasks = ref([{ title: "", isCompleted: false }]);
     const taskStore = useTaskStore();
-    taskStore.fetchColumns();
+    taskStore.fetchBoards().then(() => {
+      taskStore.fetchColumns(taskStore.selectedBoard.id);
+    });
     const title = ref("");
     const description = ref("");
     const status = ref("");
@@ -115,6 +117,7 @@ export default {
     const handleSubmit = () => {
       taskStore
         .addCard(
+          taskStore.selectedBoard.id,
           selectedColumnId.value,
           title.value,
           description.value,
