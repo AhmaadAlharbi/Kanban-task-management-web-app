@@ -92,7 +92,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import getCollection from "../composables/getCollection";
 import { useTaskStore } from "../stores/TaskStore";
 import TaskDetails from "../components/TaskDetails.vue";

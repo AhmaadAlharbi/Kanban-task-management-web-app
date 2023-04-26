@@ -20,7 +20,10 @@
           class="absolute right-0 top-20 z-20 bg-white shadow-lg px-10 py-5"
         >
           <ul class="space-y-2">
-            <li class="cursor-pointer text-gray-400 hover:text-gray-800">
+            <li
+              @click="editBoard = true"
+              class="cursor-pointer text-gray-400 hover:text-gray-800"
+            >
               Edit Task
             </li>
             <li
@@ -50,14 +53,14 @@
       <div v-for="sub in subtasks" :key="sub.id">
         <div
           v-if="sub.card_id === selectedCard.id"
-          class="bg-gray-200 p-2 my-2 rounded-lg flex items-center"
+          class="bg-gray-200 p-2 my-2 rounded-lg flex items-center hover:bg-gray-100"
         >
           <input v-model="sub.isCompleted" type="checkbox" class="mr-2" />
           <div class="flex-1 flex justify-between items-center">
             <h1>{{ sub.title }}</h1>
             <p>
               <i
-                class="fa fa-trash-o cursor-pointer"
+                class="fa fa-trash-o cursor-pointer hover:text-red-400 transition-colors duration-100"
                 style="font-size: 36px"
                 @click="showConfirmDialog(sub.id, 'subtask')"
               ></i>
@@ -69,18 +72,16 @@
         <label class="mr-2">Current Status</label>
         <select
           class="bg-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
+          v-model="selectedColumnId"
         >
+          <option value="" disabled>Select a column</option>
           <option
-            v-for="(col, index) in taskStore.columns"
+            v-for="col in taskStore.columns"
             :key="col.id"
+            :value="col.id"
             :selected="col.id === selectedCard.column_id"
           >
-            {{
-              index === 0
-                ? taskStore.columns.find((c) => c.id === selectedCard.column_id)
-                    .name
-                : col.name
-            }}
+            {{ col.name }}
           </option>
         </select>
       </div>
@@ -94,20 +95,30 @@
       </button>
     </div>
   </div>
+  <div v-if="editBoard">
+    <EditBoard
+      :selectedCard="selectedCard"
+      :subtasks="subtasks"
+      @close="editBoard = false"
+    />
+  </div>
 </template>
 
 <script>
 import { computed, ref } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
 import Swal from "sweetalert2";
-
+import EditBoard from "./EditBoard.vue";
 export default {
   props: ["selectedCard", "subtasks"],
-  setup() {
+  components: { EditBoard },
+  setup(props) {
     const taskStore = useTaskStore();
     taskStore.fetchColumns();
-    const cardMenuIcon = ref(false);
+    const selectedColumnId = ref(props.selectedCard.column_id);
 
+    const cardMenuIcon = ref(false);
+    const editBoard = ref(false);
     const showConfirmDialog = (id, type) => {
       let message, successMessage;
       let deleteFunction = null;
@@ -139,7 +150,13 @@ export default {
       });
     };
 
-    return { taskStore, showConfirmDialog, cardMenuIcon };
+    return {
+      selectedColumnId,
+      taskStore,
+      showConfirmDialog,
+      cardMenuIcon,
+      editBoard,
+    };
   },
 };
 </script>

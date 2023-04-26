@@ -5,110 +5,198 @@
   >
     <div class="bg-white w-11/12 md:w-1/2 lg:w-1/3 p-6 rounded-lg">
       <h2 class="text-2xl font-bold mb-4">Edit Board</h2>
-      <form class="max-w-sm mx-auto">
+      <form @submit.prevent="handleSubmit" class="max-w-md mx-auto">
         <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="board-name">
-            Board Name
+          <label class="block text-gray-700 font-bold mb-2" for="title">
+            Title
           </label>
           <input
-            v-model="taskStore.boardName"
             class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="board-name"
-            name="board-name"
+            id="title"
             type="text"
-            placeholder="Enter a board name"
+            placeholder="Enter title"
+            v-model="selectedCard.title"
           />
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="board-columns">
-            Board Columns
+          <label class="block text-gray-700 font-bold mb-2" for="description">
+            Description
           </label>
-        </div>
-        <div
-          class="flex items-center mb-2"
-          v-for="column in taskStore.allColumns"
-          :key="column.name"
-        >
-          <input
-            v-model="column.name"
-            id="board-columns"
+          <textarea
             class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            name="board-columns"
-            type="text"
-          />
-          <button
-            class="bg-transparent hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-          >
-            <img class="h-4 w-4" src="@/assets/images/icon-cross.svg" alt="" />
-          </button>
+            id="description"
+            placeholder="Enter description"
+            v-model="selectedCard.description"
+          ></textarea>
         </div>
-        <div v-for="(subtask, index) in subtasks" :key="index">
-          <div v-if="index !== 0" class="flex items-center mb-2">
-            <input
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              :id="'subtask-' + index"
-              type="text"
-              :placeholder="'Enter subtask'"
-            />
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="subtask">
+            SubTasks
+          </label>
 
+          <!--- --->
+          <div v-for="(subtask, index) in subtasks" :key="index">
+            <div
+              class="flex items-center mb-2"
+              v-if="subtask.card_id === selectedCard.id"
+            >
+              <input
+                class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                :id="'subtask-' + index"
+                type="text"
+                v-model="subtask.title"
+              />
+
+              <button
+                @click="showConfirmDialog(subtask.id, 'subtask')"
+                class="ml-2 flex-shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-full bg-transparent text-white focus:outline-none focus:shadow-outline"
+                type="button"
+              >
+                <img src="@/assets/images/icon-cross.svg" alt="" />
+              </button>
+            </div>
+          </div>
+          <div v-for="(subtask, index) in newSubtasks" :key="index">
+            <div class="flex items-center" v-if="index > 0">
+              <input
+                class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                :id="'subtask-' + index"
+                type="text"
+                v-model="subtask.title"
+              />
+
+              <button
+                @click="removeSubtask(index)"
+                class="ml-2 flex-shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-full bg-transparent text-white focus:outline-none focus:shadow-outline"
+                type="button"
+              >
+                <img src="@/assets/images/icon-cross.svg" alt="" />
+              </button>
+            </div>
+          </div>
+          <div class="flex justify-center my-7">
             <button
-              @click="removeSubtask(index)"
-              class="bg-transparent hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              @click="addSubtask"
+              class="bg-purple-500 w-full hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
               type="button"
             >
-              <img src="@/assets/images/icon-cross.svg" alt="" />
+              Add new subtask
             </button>
           </div>
-        </div>
 
-        <div class="flex justify-center my-4">
-          <button
-            @click="addSubtask"
-            class="bg-purple-500 w-full hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
-            type="button"
+          <label>Status</label>
+          <select
+            class="bg-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
+            v-model="selectedColumnId"
           >
-            Add new subtask
+            <option value="" disabled>Select a column</option>
+            <option
+              v-for="col in taskStore.columns"
+              :key="col.id"
+              :value="col.id"
+              :selected="col.id === selectedCard.column_id"
+            >
+              {{ col.name }}
+            </option>
+          </select>
+          <button
+            class="bg-purple-300 w-full hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+          >
+            update Task
           </button>
         </div>
-        <button
-          class="bg-white border border-purple-700 w-full my-1 hover:opacity-75 text-purple-900 font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
-          type="submit"
-        >
-          Save Changes
-        </button>
-        <!-- <button
-          class="bg-transparent border border-purple-500 w-full hover:opacity-75 text-purple-700 font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
-          type="submit"
-        >
-          save changes
-        </button> -->
       </form>
-
-      <!-- <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        @click.stop="$emit('close')"
-      >
-        Close Modal
-      </button> -->
     </div>
   </div>
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
-import { ref } from "vue";
+
 export default {
-  setup() {
+  props: ["selectedCard", "subtasks"],
+  setup(props) {
+    const newSubtasks = ref([]);
     const taskStore = useTaskStore();
-    const subtasks = ref([{ text: "" }]);
+    taskStore.fetchColumns();
+    const title = ref("");
+    const description = ref("");
+
+    const status = ref("");
+    const selectedColumnId = ref(props.selectedCard.column_id);
+
     const addSubtask = () => {
-      subtasks.value.push({ text: "" });
+      newSubtasks.value.push({ title: "", isCompleted: false });
     };
+
     const removeSubtask = (index) => {
-      subtasks.value.splice(index, 1);
+      newSubtasks.value.splice(index, 1);
     };
-    return { taskStore, subtasks, addSubtask, removeSubtask };
+    const showConfirmDialog = (id, type) => {
+      let message, successMessage;
+      let deleteFunction = null;
+      if (type === "subtask") {
+        message = "Delete this subtask?";
+        successMessage = "Your subtask has been deleted.";
+        deleteFunction = taskStore.deleteSubtask;
+      } else if (type === "task") {
+        message = "Delete this task?";
+        successMessage = "Your task has been deleted.";
+        deleteFunction = taskStore.deleteCard;
+      }
+
+      Swal.fire({
+        title: message,
+        text: "You will not be able to recover this item!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteFunction(id);
+          Swal.fire("Deleted!", successMessage, "success");
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire("Cancelled", "Your item is safe :)", "error");
+        }
+      });
+    };
+    const handleSubmit = async () => {
+      try {
+        await taskStore.updateCard(props.selectedCard, {
+          column_id: selectedColumnId.value,
+          title: props.selectedCard.title,
+          description: props.selectedCard.description,
+        });
+        const nonEmptySubtasks = newSubtasks.value.filter(
+          (subtask) => subtask.title !== ""
+        );
+        if (nonEmptySubtasks.length > 0) {
+          await taskStore.updateSubtasks(
+            props.selectedCard.id,
+            nonEmptySubtasks
+          );
+        }
+        location.reload();
+      } catch (error) {
+        console.error("Error updating card:", error);
+      }
+    };
+
+    return {
+      showConfirmDialog,
+      selectedColumnId,
+      title,
+      description,
+      status,
+      handleSubmit,
+      taskStore,
+      newSubtasks,
+      addSubtask,
+      removeSubtask,
+    };
   },
 };
 </script>

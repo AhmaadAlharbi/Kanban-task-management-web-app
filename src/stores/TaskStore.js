@@ -29,7 +29,7 @@ export const useTaskStore = defineStore("taskStore", {
       const newCard = {
         column_id: columnId,
         title: title,
-        description: JSON.stringify(description), // convert description to a string
+        description: description, // convert description to a string
       };
       try {
         const res = await projectFirestore.collection("cards").add(newCard);
@@ -41,7 +41,10 @@ export const useTaskStore = defineStore("taskStore", {
         console.error("Error adding card:", error);
       }
     },
-    async addSubtasks(cardId, title, isCompleted) {
+    async addSubtasks(cardId, title) {
+      if (title.trim() === "") {
+        return; // skip empty subtasks
+      }
       const newSubtask = {
         card_id: cardId,
         title: title,
@@ -89,6 +92,66 @@ export const useTaskStore = defineStore("taskStore", {
         location.reload();
       } catch (error) {
         console.error("Error deleting card:", error);
+      }
+    },
+    async updateCard(card, updates) {
+      try {
+        const cardRef = projectFirestore.collection("cards").doc(card.id);
+        await cardRef.update(updates);
+        Object.assign(card, updates);
+      } catch (error) {
+        console.error("Error updating card:", error);
+      }
+    },
+    async updateSubtasks(cardId, newSubtasks) {
+      try {
+        const currentSubtasks = this.subtasks.filter(
+          (subtask) => subtask.card_id === cardId
+        );
+
+        // delete subtasks that are not in the new subtasks array
+        const subtasksToDelete = currentSubtasks.filter(
+          (subtask) =>
+            !newSubtasks.some((newSubtask) => newSubtask.id === subtask.id)
+        );
+        for (const subtask of subtasksToDelete) {
+          await projectFirestore
+            .collection("subtasks")
+            .doc(subtask.id)
+            .delete();
+          this.subtasks.splice(this.subtasks.indexOf(subtask), 1);
+        }
+
+        // update or add new subtasks
+        for (const newSubtask of newSubtasks) {
+          if (newSubtask.id) {
+            // subtask already exists, update it
+            await projectFirestore
+              .collection("subtasks")
+              .doc(newSubtask.id)
+              .update({
+                title: newSubtask.title,
+                isCompleted: newSubtask.isCompleted,
+              });
+            const updatedSubtaskIndex = this.subtasks.findIndex(
+              (subtask) => subtask.id === newSubtask.id
+            );
+            this.subtasks[updatedSubtaskIndex] = {
+              ...this.subtasks[updatedSubtaskIndex],
+              ...newSubtask,
+            };
+          } else {
+            // subtask is new, add it
+            const res = await projectFirestore.collection("subtasks").add({
+              card_id: cardId,
+              title: newSubtask.title,
+              isCompleted: newSubtask.isCompleted,
+            });
+            this.subtasks.push({ ...newSubtask, id: res.id, card_id: cardId });
+          }
+        }
+      } catch (error) {
+        console.error("Error updating subtasks:", error);
       }
     },
   },
