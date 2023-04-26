@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 
 export const useTaskStore = defineStore("taskStore", {
   state: () => ({
+    selectedBoard: "",
     boards: [],
     columns: [],
     cards: [],
@@ -20,10 +21,29 @@ export const useTaskStore = defineStore("taskStore", {
     async fetchBoards() {
       const res = await projectFirestore.collection("Boards").get();
       this.boards = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      this.selectedBoard = this.boards[0];
     },
-    async fetchColumns() {
-      const res = await projectFirestore.collection("columns").get();
+    async fetchColumns(boardId) {
+      if (!boardId) {
+        return;
+      }
+      const res = await projectFirestore
+        .collection("columns")
+        .where("board_id", "==", boardId)
+        .get();
       this.columns = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    },
+    async fetchCards(boardId) {
+      if (!boardId) {
+        return;
+      }
+      const cardsRef = projectFirestore.collection("cards");
+      const cardsQuery = cardsRef.where("board_id", "==", boardId);
+      const cardsSnapshot = await cardsQuery.get();
+      this.cards = cardsSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
     },
     async addCard(columnId, title, description, subtasks = []) {
       const newCard = {
