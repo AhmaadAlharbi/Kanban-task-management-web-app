@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { projectFirestore } from "../firebase/config";
+import Swal from "sweetalert2";
 
 export const useTaskStore = defineStore("taskStore", {
   state: () => ({
@@ -65,6 +66,29 @@ export const useTaskStore = defineStore("taskStore", {
         location.reload();
       } catch (error) {
         console.error("Error deleting subtask:", error);
+      }
+    },
+    async deleteCard(cardId) {
+      try {
+        // Delete card from Firestore
+        await projectFirestore.collection("cards").doc(cardId).delete();
+
+        // Remove card from local state
+        const index = this.cards.findIndex((card) => card.id === cardId);
+        this.cards.splice(index, 1);
+
+        // Show confirmation using SweetAlert
+        await Swal.fire({
+          title: "Task Deleted deleted!",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        // Refresh the page
+        location.reload();
+      } catch (error) {
+        console.error("Error deleting card:", error);
       }
     },
   },
