@@ -9,6 +9,7 @@
         <h1 class="mb-4 font-bold text-xl" v-if="selectedCard">
           {{ selectedCard.title }}
         </h1>
+
         <img
           @click="cardMenuIcon = !cardMenuIcon"
           class="cursor-pointer"
@@ -35,21 +36,10 @@
           </ul>
         </nav>
       </div>
-      <!-- <p class="mb-4" v-if="subtasks">
-        {{
-          subtasks.filter(
-            (subtask) =>
-              subtask.card_id === selectedCard.id && subtask.isCompleted
-          ).length
-        }}
-        of
-        {{
-          subtasks.filter((subtask) => subtask.card_id === selectedCard.id)
-            .length
-        }}
-        subtasks
-      </p> -->
-
+      <p>
+        subtasks ( {{ cardCompletedSubtasksCount(selectedCard) }} of
+        {{ selectedCard.subtasks.length }} )
+      </p>
       <div v-for="sub in selectedCard.subtasks" :key="sub.id">
         <div
           class="bg-gray-200 p-2 my-2 rounded-lg flex items-center hover:bg-gray-100"
@@ -57,6 +47,7 @@
           <input v-model="sub.isCompleted" type="checkbox" class="mr-2" />
           <div class="flex-1 flex justify-between items-center">
             <h1>{{ sub.title }}</h1>
+
             <p>
               <i
                 class="fa fa-trash-o cursor-pointer hover:text-red-400 transition-colors duration-100"
@@ -159,8 +150,14 @@ export default {
         }
       });
     };
-
+    const cardCompletedSubtasksCount = (card) => {
+      const completedSubtasks = taskStore.subtasks.filter(
+        (subtask) => subtask.card_id === card.id && subtask.isCompleted
+      );
+      return completedSubtasks.length;
+    };
     return {
+      cardCompletedSubtasksCount,
       subtasks,
       selectedColumnId,
       taskStore,

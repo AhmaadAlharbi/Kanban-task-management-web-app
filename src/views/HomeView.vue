@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import { useTaskStore } from "../stores/TaskStore";
 import AddTask from "../components/AddTask.vue";
 import TaskDetails from "../components/TaskDetails.vue";
@@ -80,6 +80,20 @@ export default defineComponent({
         });
       });
     });
+    // Watch for changes in selectedBoard and update the displayed cards
+    watch(
+      () => taskStore.selectedBoard,
+      () => {
+        taskStore.fetchColumns(taskStore.selectedBoard.id).then(() => {
+          taskStore.fetchCards(taskStore.selectedBoard.id).then(() => {
+            // Fetch subtask for each card
+            for (const card of taskStore.cards) {
+              taskStore.fetchSubtasks(card.id);
+            }
+          });
+        });
+      }
+    );
     // Define computed property to calculate completed subtasks count
     const cardCompletedSubtasksCount = (card) => {
       const completedSubtasks = taskStore.subtasks.filter(

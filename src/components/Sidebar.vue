@@ -4,10 +4,10 @@
       <img src="@/assets/images/logo-dark.svg" alt="" />
       <div class="">
         <p class="uppercase text-gray-500 my-5 px-3">
-          all boards ({{ taskStore.totalCount }})
+          all boards ({{ taskStore.boards.length }})
         </p>
         <nav>
-          <ul class="space-y-4 px-3 cursor-pointer">
+          <div class="space-y-4 px-3 cursor-pointer">
             <!-- <li
               v-for="(board, index) in taskStore.tasks"
               :key="index"
@@ -21,12 +21,26 @@
             >
               {{ board.name }}
             </li> -->
-            <li v-for="name in taskStore.boardNames" :key="name">{{ name }}</li>
+            <div
+              v-for="(board, index) in taskStore.boards"
+              :key="board.id"
+              class="flex items-center space-x-3 py-2 px-4"
+              :class="{
+                'bg-purple-500 text-white  rounded-lg ':
+                  board.id === taskStore.selectedBoard.id,
+              }"
+            >
+              <img src="@/assets/images/icon-board.svg" alt="" />
+              <h4 @click="changeBoard(index)">{{ board.name }}</h4>
+            </div>
 
-            <li class="">+ Create a New Board</li>
-          </ul>
+            <li @click="addBoard = true" class="">+ Create a New Board</li>
+          </div>
         </nav>
       </div>
+    </div>
+    <div v-if="addBoard">
+      <AddBoard @close="addboard = false" />
     </div>
     <div
       class="flex items-center space-x-3 absolute bottom-10 justify-center left-5 bg-gray-200 px-10"
@@ -58,17 +72,32 @@
 
 <script>
 import { useTaskStore } from "../stores/TaskStore";
+import AddBoard from "../components/AddBoard.vue";
 import { ref } from "vue";
 export default {
+  components: { AddBoard },
   setup() {
     const taskStore = useTaskStore();
     taskStore.fetchBoards();
     const activeBoardIndex = ref(0);
-
+    const addBoard = ref(false);
     const changeActiveBoard = (index) => {
       taskStore.setSelectedBoardIndex(index);
     };
-    return { taskStore, activeBoardIndex, changeActiveBoard };
+    const changeBoard = (index) => {
+      taskStore.selectedBoard = taskStore.boards[index];
+    };
+    const handleNewBoard = () => {
+      const name = ref("");
+      taskStore.addBoard();
+    };
+    return {
+      addBoard,
+      changeBoard,
+      taskStore,
+      activeBoardIndex,
+      changeActiveBoard,
+    };
   },
 };
 </script>

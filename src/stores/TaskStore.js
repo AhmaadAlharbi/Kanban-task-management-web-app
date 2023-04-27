@@ -19,6 +19,10 @@ export const useTaskStore = defineStore("taskStore", {
         return subtask.isCompleted && cardIds.includes(subtask.card_id);
       });
     },
+    latestBoard: (state) => {
+      const lastBoard = state.boards.slice(-1)[0];
+      return lastBoard;
+    },
   },
 
   actions: {
@@ -77,6 +81,27 @@ export const useTaskStore = defineStore("taskStore", {
         card.subtasks = subtasks;
       }
     },
+    async addBoard(name) {
+      try {
+        const res = await projectFirestore.collection("Boards").add({ name });
+        const newBoard = { id: res.id, name };
+        this.boards.push(newBoard);
+      } catch (error) {
+        console.error("Error adding board:", error);
+      }
+    },
+    async addColumn(boardId, name) {
+      try {
+        const res = await projectFirestore
+          .collection("columns")
+          .add({ board_id: boardId, name });
+        const newColumn = { id: res.id, board_id: boardId, name };
+        this.columns.push(newColumn);
+      } catch (error) {
+        console.error("Error adding column:", error);
+      }
+    },
+
     async addCard(boardId, columnId, title, description, subtasks = []) {
       const newCard = {
         board_id: boardId,
