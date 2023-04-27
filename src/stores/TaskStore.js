@@ -13,8 +13,12 @@ export const useTaskStore = defineStore("taskStore", {
   getters: {
     boardNames: (state) => state.boards.map((board) => board.name),
     columnsNames: (state) => state.columns.map((column) => column.name),
-    completedSubTasks: (state) =>
-      state.boards.filter((board) => board.subtask.isCompleted),
+    completedSubTasks: (state) => {
+      const cardIds = state.cards.map((card) => card.id);
+      return state.subtasks.filter((subtask) => {
+        return subtask.isCompleted && cardIds.includes(subtask.card_id);
+      });
+    },
   },
 
   actions: {
@@ -43,7 +47,19 @@ export const useTaskStore = defineStore("taskStore", {
       this.cards = cardsSnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
+        subtasks: [],
       }));
+      // Fetch subtasks for each card
+      for (const card of this.cards) {
+        const subtasksRef = projectFirestore
+          .collection("subtasks")
+          .where("card_id", "==", card.id);
+        const subtasksSnapshot = await subtasksRef.get();
+        card.subtasks = subtasksSnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+      }
     },
     async fetchSubtasks(cardId) {
       if (!cardId) {
@@ -52,10 +68,14 @@ export const useTaskStore = defineStore("taskStore", {
       const subtasksRef = projectFirestore.collection("subtasks");
       const subtasksQuery = subtasksRef.where("card_id", "==", cardId);
       const subtasksSnapshot = await subtasksQuery.get();
-      this.subtasks = subtasksSnapshot.docs.map((doc) => ({
+      const subtasks = subtasksSnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
+      const card = this.cards.find((card) => card.id === cardId);
+      if (card) {
+        card.subtasks = subtasks;
+      }
     },
     async addCard(boardId, columnId, title, description, subtasks = []) {
       const newCard = {

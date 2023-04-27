@@ -32,10 +32,15 @@
               <!-- Only display the card if it belongs to the current column -->
               <div v-if="card.column_id === col.id">
                 <div
+                  @click="selectedCard = card"
                   class="flex flex-col shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
                 >
                   <!-- Display the card title -->
                   <p class="font-bold" v-if="card">{{ card.title }}</p>
+                  <p v-if="card">
+                    {{ cardCompletedSubtasksCount(card) }} of
+                    {{ card.subtasks.length }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -43,25 +48,58 @@
         </div>
       </div>
     </div>
+    <div v-if="showCardDetails">
+      <TaskDetails
+        :selectedCard="selectedCard"
+        @close="showCardDetails = false"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { useTaskStore } from "../stores/TaskStore";
 import AddTask from "../components/AddTask.vue";
+import TaskDetails from "../components/TaskDetails.vue";
 export default defineComponent({
-  components: { AddTask },
+  components: { AddTask, TaskDetails },
   setup() {
+    const selectedCard = ref("");
     const addTask = ref(false);
+    const showCardDetails = ref(false);
     const taskStore = useTaskStore();
     //fetch board to set selectedBoard
     taskStore.fetchBoards().then(() => {
       taskStore.fetchColumns(taskStore.selectedBoard.id).then(() => {
-        taskStore.fetchCards(taskStore.selectedBoard.id);
+        taskStore.fetchCards(taskStore.selectedBoard.id).then(() => {
+          //fetch subtask for each card
+          for (const card of taskStore.cards) {
+            taskStore.fetchSubtasks(card.id);
+          }
+        });
       });
     });
-    return { taskStore, addTask };
+    // Define computed property to calculate completed subtasks count
+    const cardCompletedSubtasksCount = (card) => {
+      const completedSubtasks = taskStore.subtasks.filter(
+        (subtask) => subtask.card_id === card.id && subtask.isCompleted
+      );
+      return completedSubtasks.length;
+    };
+    const showTaskDetails = (card) => {
+      selectedCard.value = card;
+      showCardDetails.value = true;
+    };
+
+    return {
+      showTaskDetails,
+      selectedCard,
+      showCardDetails,
+      taskStore,
+      addTask,
+      cardCompletedSubtasksCount,
+    };
   },
 });
 </script>

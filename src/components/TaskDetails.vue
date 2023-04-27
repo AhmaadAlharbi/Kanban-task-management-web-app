@@ -35,7 +35,7 @@
           </ul>
         </nav>
       </div>
-      <p class="mb-4" v-if="subtasks">
+      <!-- <p class="mb-4" v-if="subtasks">
         {{
           subtasks.filter(
             (subtask) =>
@@ -48,11 +48,10 @@
             .length
         }}
         subtasks
-      </p>
+      </p> -->
 
-      <div v-for="sub in subtasks" :key="sub.id">
+      <div v-for="sub in selectedCard.subtasks" :key="sub.id">
         <div
-          v-if="sub.card_id === selectedCard.id"
           class="bg-gray-200 p-2 my-2 rounded-lg flex items-center hover:bg-gray-100"
         >
           <input v-model="sub.isCompleted" type="checkbox" class="mr-2" />
@@ -105,18 +104,29 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
 import Swal from "sweetalert2";
 import EditBoard from "./EditBoard.vue";
 export default {
-  props: ["selectedCard", "subtasks"],
+  props: ["selectedCard"],
   components: { EditBoard },
   setup(props) {
     const taskStore = useTaskStore();
-    taskStore.fetchColumns();
+    taskStore.fetchBoards().then(() => {
+      taskStore.fetchColumns(taskStore.selectedBoard.id);
+    });
+    const subtasks = ref([]);
+    // Fetch subtasks based on the selected card id
+    watch(
+      () => props.selectedCard.id,
+      async (cardId) => {
+        subtasks.value = await taskStore.fetchSubtasks(cardId);
+      },
+      { immediate: true }
+    );
+    // taskStore.fetchSubtasks(props.selectedCard.id);
     const selectedColumnId = ref(props.selectedCard.column_id);
-
     const cardMenuIcon = ref(false);
     const editBoard = ref(false);
     const showConfirmDialog = (id, type) => {
@@ -151,6 +161,7 @@ export default {
     };
 
     return {
+      subtasks,
       selectedColumnId,
       taskStore,
       showConfirmDialog,
