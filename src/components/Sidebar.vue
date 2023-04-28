@@ -88,7 +88,6 @@ export default {
           }
         });
       });
-      isLoading.value = false; // Set isLoading to false once data is loaded
     });
     const changeBoard = (index) => {
       taskStore.selectedBoard = taskStore.boards[index];

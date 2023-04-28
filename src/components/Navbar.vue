@@ -20,8 +20,35 @@
       </div>
     </ul>
   </nav>
+  <nav
+    v-if="cardMenuIcon"
+    class="absolute right-0 top-20 z-20 bg-white shadow-lg px-10 py-5"
+  >
+    <ul class="space-y-2">
+      <li
+        @click="
+          editBoard = true;
+          cardMenuIcon = false;
+        "
+        class="cursor-pointer text-gray-400 hover:text-gray-800"
+      >
+        Edit Task
+      </li>
+      <li
+        @click="
+          taskStore.deleteBoardAndRelatedItems(taskStore.selectedBoard.id)
+        "
+        class="cursor-pointer text-red-400 hover:text-red-800"
+      >
+        Delete board
+      </li>
+    </ul>
+  </nav>
   <div v-if="addTask">
     <AddTask @close="addTask = false" />
+  </div>
+  <div v-if="editBoard">
+    <EditBoard :selectedBoard="selectedBoard" @close="editBoard = false" />
   </div>
 </template>
 
@@ -29,14 +56,17 @@
 import { ref } from "vue";
 import AddTask from "./AddTask.vue";
 import { useTaskStore } from "../stores/TaskStore";
+import EditBoard from "../components/EditBoard.vue";
 
 export default {
-  components: { AddTask },
+  components: { AddTask, EditBoard },
   setup() {
     const taskStore = useTaskStore();
     const addTask = ref(false);
+    const editBoard = ref(false);
+
     const cardMenuIcon = ref(false);
-    return { taskStore, addTask, cardMenuIcon };
+    return { taskStore, addTask, cardMenuIcon, editBoard };
   },
 };
 </script>

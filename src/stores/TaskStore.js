@@ -49,8 +49,6 @@ export const useTaskStore = defineStore("taskStore", {
       this.isLoading = false;
     },
     async fetchCards(boardId) {
-      this.isLoading = true;
-
       if (!boardId) {
         return;
       }
