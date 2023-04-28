@@ -9,6 +9,7 @@ export const useTaskStore = defineStore("taskStore", {
     columns: [],
     cards: [],
     subtasks: [],
+    spinner: true,
   }),
   getters: {
     boardNames: (state) => state.boards.map((board) => board.name),
@@ -40,6 +41,7 @@ export const useTaskStore = defineStore("taskStore", {
         .where("board_id", "==", boardId)
         .get();
       this.columns = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      this.spinner = false;
     },
     async fetchCards(boardId) {
       if (!boardId) {

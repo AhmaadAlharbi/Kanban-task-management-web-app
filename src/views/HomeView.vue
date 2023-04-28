@@ -1,5 +1,14 @@
 <template>
-  <div class="flex flex-col w-full">
+  <div
+    class="absolute w-full h-full bg-white flex flex-col justify-center items-center"
+    v-if="isLoading"
+  >
+    <div class="lds-dual-ring"></div>
+    <p class="text-pink-500 text-3xl font-bold italic my-2">
+      Data is on its way ...
+    </p>
+  </div>
+  <div v-else class="flex flex-col w-full">
     <nav class="bg-white h-20">
       <ul class="flex justify-between items-center mt-4 px-10">
         <li class="text-2xl font-bold">
@@ -48,7 +57,10 @@
     <div v-if="addTask">
       <AddTask @close="addTask = false" />
     </div>
-    <div v-if="taskStore.columns.length > 0">
+    <div v-if="taskStore.columns.length === 0 && taskStore.spinner">
+      <div class="lds-dual-ring"></div>
+    </div>
+    <div v-if="taskStore.columns">
       <div class="flex justify-around mt-3">
         <div
           class="flex flex-col"
@@ -82,6 +94,7 @@
         </div>
       </div>
     </div>
+
     <div v-if="showCardDetails">
       <TaskDetails
         :selectedCard="selectedCard"
@@ -105,6 +118,7 @@ export default defineComponent({
   components: { AddTask, TaskDetails, EditBoard },
   setup() {
     const selectedCard = ref("");
+    const isLoading = ref(true);
     const addTask = ref(false);
     const cardMenuIcon = ref(false);
     const editBoard = ref(false);
@@ -120,7 +134,9 @@ export default defineComponent({
           }
         });
       });
+      isLoading.value = false; // Set isLoading to false once data is loaded
     });
+
     // Watch for changes in selectedBoard and update the displayed cards
     watch(
       () => taskStore.selectedBoard,
@@ -148,6 +164,7 @@ export default defineComponent({
     };
 
     return {
+      isLoading,
       cardMenuIcon,
       editBoard,
       showTaskDetails,
@@ -160,3 +177,29 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #fcf;
+  border-color: #fcf transparent #fcf transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
