@@ -22,7 +22,7 @@
         >
           <ul class="space-y-2">
             <li
-              @click="editBoard = true"
+              @click="EditTask = true"
               class="cursor-pointer text-gray-400 hover:text-gray-800"
             >
               Edit Task
@@ -85,11 +85,11 @@
       </button>
     </div>
   </div>
-  <div v-if="editBoard">
-    <EditBoard
+  <div v-if="EditTask">
+    <EditTask
       :selectedCard="selectedCard"
       :subtasks="subtasks"
-      @close="editBoard = false"
+      @close="EditTask = false"
     />
   </div>
 </template>
@@ -98,15 +98,13 @@
 import { computed, ref, watch } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
 import Swal from "sweetalert2";
-import EditBoard from "./EditBoard.vue";
+import EditTask from "./EditTask.vue";
 export default {
   props: ["selectedCard"],
-  components: { EditBoard },
+  components: { EditTask },
   setup(props) {
     const taskStore = useTaskStore();
-    taskStore.fetchBoards().then(() => {
-      taskStore.fetchColumns(taskStore.selectedBoard.id);
-    });
+
     const subtasks = ref([]);
     // Fetch subtasks based on the selected card id
     watch(
@@ -119,7 +117,7 @@ export default {
     // taskStore.fetchSubtasks(props.selectedCard.id);
     const selectedColumnId = ref(props.selectedCard.column_id);
     const cardMenuIcon = ref(false);
-    const editBoard = ref(false);
+    const EditTask = ref(false);
     const showConfirmDialog = (id, type) => {
       let message, successMessage;
       let deleteFunction = null;
@@ -163,7 +161,7 @@ export default {
       taskStore,
       showConfirmDialog,
       cardMenuIcon,
-      editBoard,
+      EditTask,
     };
   },
 };

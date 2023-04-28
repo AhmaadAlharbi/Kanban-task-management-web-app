@@ -2,12 +2,44 @@
   <div class="flex flex-col w-full">
     <nav class="bg-white h-20">
       <ul class="flex justify-between items-center mt-4 px-10">
-        <li class="text-2xl font-bold">Platform Launch</li>
+        <li class="text-2xl font-bold">
+          {{ taskStore.selectedBoard.name }} - {{ taskStore.selectedBoard.id }}
+        </li>
+        <div class="flex items-center space-x-4 justify-around">
+          <li
+            @click="addTask = true"
+            class="bg-purple-500 py-2 px-2 text-white cursor-pointer"
+          >
+            + Add a New Task
+          </li>
+          <img
+            @click="cardMenuIcon = !cardMenuIcon"
+            class="cursor-pointer"
+            src="@/assets/images/icon-vertical-ellipsis.svg"
+            alt=""
+          />
+        </div>
+      </ul>
+    </nav>
+    <nav
+      v-if="cardMenuIcon"
+      class="absolute right-0 top-20 z-20 bg-white shadow-lg px-10 py-5"
+    >
+      <ul class="space-y-2">
         <li
-          @click="addTask = true"
-          class="bg-purple-500 py-2 px-2 text-white cursor-pointer"
+          @click="
+            editBoard = true;
+            cardMenuIcon = false;
+          "
+          class="cursor-pointer text-gray-400 hover:text-gray-800"
         >
-          + Add a New Task
+          Edit Task
+        </li>
+        <li
+          @click="showConfirmDialog(selectedCard.id, 'task')"
+          class="cursor-pointer text-red-400 hover:text-red-800"
+        >
+          Delete Task
         </li>
       </ul>
     </nav>
@@ -54,6 +86,9 @@
         @close="showCardDetails = false"
       />
     </div>
+    <div v-if="editBoard">
+      <EditBoard :selectedBoard="selectedBoard" @close="editBoard = false" />
+    </div>
   </div>
 </template>
 
@@ -62,11 +97,15 @@ import { defineComponent, ref, computed, watch } from "vue";
 import { useTaskStore } from "../stores/TaskStore";
 import AddTask from "../components/AddTask.vue";
 import TaskDetails from "../components/TaskDetails.vue";
+import EditBoard from "../components/EditBoard.vue";
+
 export default defineComponent({
-  components: { AddTask, TaskDetails },
+  components: { AddTask, TaskDetails, EditBoard },
   setup() {
     const selectedCard = ref("");
     const addTask = ref(false);
+    const cardMenuIcon = ref(false);
+    const editBoard = ref(false);
     const showCardDetails = ref(false);
     const taskStore = useTaskStore();
     //fetch board to set selectedBoard
@@ -107,6 +146,8 @@ export default defineComponent({
     };
 
     return {
+      cardMenuIcon,
+      editBoard,
       showTaskDetails,
       selectedCard,
       showCardDetails,

@@ -119,6 +119,7 @@ export const useTaskStore = defineStore("taskStore", {
         console.error("Error adding card:", error);
       }
     },
+
     async addSubtasks(cardId, title) {
       if (title.trim() === "") {
         return; // skip empty subtasks
@@ -137,6 +138,54 @@ export const useTaskStore = defineStore("taskStore", {
         console.error("Error adding card:", error);
       }
     },
+    async deleteColumnAndCards(columnId) {
+      try {
+        // Prompt the user to confirm the deletion
+        const result = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        });
+
+        if (result.isConfirmed) {
+          // Delete all the cards associated with the column from Firestore
+          const cardsToDelete = this.cards.filter(
+            (card) => card.column_id === columnId
+          );
+          for (const card of cardsToDelete) {
+            await projectFirestore.collection("cards").doc(card.id).delete();
+          }
+
+          // Remove all the cards associated with the column from local state
+          this.cards = this.cards.filter((card) => card.column_id !== columnId);
+
+          // Delete the column from Firestore
+          await projectFirestore.collection("columns").doc(columnId).delete();
+
+          // Remove the column from local state
+          const index = this.columns.findIndex((col) => col.id === columnId);
+          this.columns.splice(index, 1);
+
+          // Show confirmation using SweetAlert
+          await Swal.fire({
+            title: "Column and cards deleted!",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+
+          // Refresh the page
+          location.reload();
+        }
+      } catch (error) {
+        console.error("Error deleting column and cards:", error);
+      }
+    },
+
     async deleteSubtask(subtaskId) {
       try {
         await projectFirestore.collection("subtasks").doc(subtaskId).delete();
@@ -172,6 +221,28 @@ export const useTaskStore = defineStore("taskStore", {
         console.error("Error deleting card:", error);
       }
     },
+    async updateBoard(boardId, updates) {
+      if (!boardId) {
+        return;
+      }
+      try {
+        const boardRef = projectFirestore.collection("Boards").doc(boardId);
+        await boardRef.update(updates);
+      } catch (error) {
+        console.error("Error updating board:", error);
+      }
+    },
+
+    async updateColumn(column, updates) {
+      try {
+        const columnRef = projectFirestore.collection("columns").doc(column.id);
+        await columnRef.update(updates);
+        Object.assign(column, updates);
+      } catch (error) {
+        console.error("Error updating column:", error);
+      }
+    },
+
     async updateCard(card, updates) {
       try {
         const cardRef = projectFirestore.collection("cards").doc(card.id);

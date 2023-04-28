@@ -78,12 +78,12 @@ export default {
   components: { AddBoard },
   setup() {
     const taskStore = useTaskStore();
-    taskStore.fetchBoards();
+    // taskStore.fetchBoards();
     const activeBoardIndex = ref(0);
     const addBoard = ref(false);
-    const changeActiveBoard = (index) => {
-      taskStore.setSelectedBoardIndex(index);
-    };
+    // const changeActiveBoard = (index) => {
+    //   taskStore.selectedBoard = taskStore.boards[index];
+    // };
     const changeBoard = (index) => {
       taskStore.selectedBoard = taskStore.boards[index];
     };
@@ -96,7 +96,6 @@ export default {
       changeBoard,
       taskStore,
       activeBoardIndex,
-      changeActiveBoard,
     };
   },
 };

@@ -99,9 +99,9 @@ export default {
   setup() {
     const subtasks = ref([{ title: "", isCompleted: false }]);
     const taskStore = useTaskStore();
-    taskStore.fetchBoards().then(() => {
-      taskStore.fetchColumns(taskStore.selectedBoard.id);
-    });
+    // taskStore.fetchBoards().then(() => {
+    //   taskStore.fetchColumns(taskStore.selectedBoard.id);
+    // });
     const title = ref("");
     const description = ref("");
     const status = ref("");
