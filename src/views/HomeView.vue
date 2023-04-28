@@ -36,10 +36,12 @@
           Edit Task
         </li>
         <li
-          @click="showConfirmDialog(selectedCard.id, 'task')"
+          @click="
+            taskStore.deleteBoardAndRelatedItems(taskStore.selectedBoard.id)
+          "
           class="cursor-pointer text-red-400 hover:text-red-800"
         >
-          Delete Task
+          Delete board
         </li>
       </ul>
     </nav>
@@ -97,7 +99,6 @@ import { defineComponent, ref, computed, watch } from "vue";
 import { useTaskStore } from "../stores/TaskStore";
 import AddTask from "../components/AddTask.vue";
 import EditBoard from "../components/EditBoard.vue";
-
 import TaskDetails from "../components/TaskDetails.vue";
 
 export default defineComponent({
