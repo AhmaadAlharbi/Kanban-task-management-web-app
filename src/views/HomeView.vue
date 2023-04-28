@@ -96,8 +96,9 @@
 import { defineComponent, ref, computed, watch } from "vue";
 import { useTaskStore } from "../stores/TaskStore";
 import AddTask from "../components/AddTask.vue";
-import TaskDetails from "../components/TaskDetails.vue";
 import EditBoard from "../components/EditBoard.vue";
+
+import TaskDetails from "../components/TaskDetails.vue";
 
 export default defineComponent({
   components: { AddTask, TaskDetails, EditBoard },

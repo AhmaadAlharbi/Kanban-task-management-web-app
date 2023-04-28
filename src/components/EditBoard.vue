@@ -71,6 +71,7 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
+import { timestamp } from "@/firebase/config";
 
 export default {
   setup() {
@@ -94,9 +95,20 @@ export default {
           name: name.value,
         });
 
-        // Update each column name
+        // Update or add each column
         for (const col of taskStore.columns) {
-          await taskStore.updateColumn(col.id, { name: col.name });
+          const updates = {
+            name: col.name,
+            board_id: taskStore.selectedBoard.id,
+            createdAt: timestamp(),
+          };
+          if (col.id) {
+            // column exists, update it
+            await taskStore.updateColumn(col.id, updates);
+          } else {
+            // column does not exist, add it
+            await taskStore.addColumn(taskStore.selectedBoard.id, col.name);
+          }
         }
 
         // Show success message using SweetAlert

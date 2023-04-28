@@ -233,9 +233,12 @@ export const useTaskStore = defineStore("taskStore", {
       }
     },
 
-    async updateColumn(column, updates) {
+    async updateColumn(columnID, updates) {
+      if (!columnID) {
+        return;
+      }
       try {
-        const columnRef = projectFirestore.collection("columns").doc(column.id);
+        const columnRef = projectFirestore.collection("columns").doc(columnID);
         await columnRef.update(updates);
         Object.assign(column, updates);
       } catch (error) {
