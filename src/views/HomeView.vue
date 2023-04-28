@@ -57,17 +57,18 @@
     <div v-if="addTask">
       <AddTask @close="addTask = false" />
     </div>
-    <div v-if="taskStore.columns.length === 0 && taskStore.spinner">
-      <div class="lds-dual-ring"></div>
-    </div>
+
     <div v-if="taskStore.columns">
       <div class="flex justify-around mt-3">
         <div
           class="flex flex-col"
-          v-for="col in taskStore.columns"
+          v-for="col in columnCardsCount"
           :key="col.id"
         >
-          <h1 class="bg-gray-300 px-2">{{ col.name }} - {{ col.id }}</h1>
+          <h1 class="px-2">
+            {{ col.name }}({{ taskStore.getColumnCardsCount(col.id) }})
+          </h1>
+
           <div v-if="taskStore.cards">
             <!-- Loop through the cards -->
             <div
@@ -136,6 +137,16 @@ export default defineComponent({
       });
       isLoading.value = false; // Set isLoading to false once data is loaded
     });
+    const columnCardsCount = computed(() => {
+      return taskStore.columns.map((col) => {
+        return {
+          ...col,
+          cardsCount: taskStore.cards.filter(
+            (card) => card.column_id === col.id
+          ).length,
+        };
+      });
+    });
 
     // Watch for changes in selectedBoard and update the displayed cards
     watch(
@@ -151,6 +162,7 @@ export default defineComponent({
         });
       }
     );
+
     // Define computed property to calculate completed subtasks count
     const cardCompletedSubtasksCount = (card) => {
       const completedSubtasks = taskStore.subtasks.filter(
@@ -164,6 +176,7 @@ export default defineComponent({
     };
 
     return {
+      columnCardsCount,
       isLoading,
       cardMenuIcon,
       editBoard,

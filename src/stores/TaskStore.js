@@ -24,6 +24,9 @@ export const useTaskStore = defineStore("taskStore", {
       const lastBoard = state.boards.slice(-1)[0];
       return lastBoard;
     },
+    getColumnCardsCount: (state) => (columnId) => {
+      return state.cards.filter((card) => card.column_id === columnId).length;
+    },
   },
 
   actions: {
