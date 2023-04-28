@@ -1,43 +1,9 @@
 <template>
-  <div
-    class="absolute w-full h-full bg-white flex flex-col justify-center items-center"
-    v-if="isLoading"
-  >
-    <div class="lds-dual-ring"></div>
-    <p class="text-pink-500 text-3xl font-bold italic my-2">
-      Data is on its way ...
-    </p>
-  </div>
-  <div v-else class="flex flex-col w-full">
-    <nav
-      v-if="cardMenuIcon"
-      class="absolute right-0 top-20 z-20 bg-white shadow-lg px-10 py-5"
-    >
-      <ul class="space-y-2">
-        <li
-          @click="
-            editBoard = true;
-            cardMenuIcon = false;
-          "
-          class="cursor-pointer text-gray-400 hover:text-gray-800"
-        >
-          Edit Task
-        </li>
-        <li
-          @click="
-            taskStore.deleteBoardAndRelatedItems(taskStore.selectedBoard.id)
-          "
-          class="cursor-pointer text-red-400 hover:text-red-800"
-        >
-          Delete board
-        </li>
-      </ul>
-    </nav>
-    <div v-if="addTask">
-      <AddTask @close="addTask = false" />
+  <div class="flex flex-col w-full">
+    <div v-if="taskStore.isLoading" class="flex justify-center items-cente">
+      <Spinner />
     </div>
-
-    <div v-if="taskStore.columns">
+    <div v-if="taskStore.columns && !taskStore.isLoading">
       <div class="flex justify-around mt-3">
         <div
           class="flex flex-col"
@@ -93,9 +59,10 @@ import { useTaskStore } from "../stores/TaskStore";
 import AddTask from "../components/AddTask.vue";
 import EditBoard from "../components/EditBoard.vue";
 import TaskDetails from "../components/TaskDetails.vue";
+import Spinner from "../components/Spinner.vue";
 
 export default defineComponent({
-  components: { AddTask, TaskDetails, EditBoard },
+  components: { AddTask, TaskDetails, EditBoard, Spinner },
   setup() {
     const selectedCard = ref("");
     const isLoading = ref(true);

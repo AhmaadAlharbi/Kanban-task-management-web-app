@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white shadow-xl py-7 w-80 h-screen px-2">
+  <div class="bg-white shadow-xl py-6 w-80 h-screen px-2">
     <div class="">
       <img src="@/assets/images/logo-dark.svg" alt="" />
       <div class="">
@@ -8,19 +8,6 @@
         </p>
         <nav>
           <div class="space-y-4 px-3 cursor-pointer">
-            <!-- <li
-              v-for="(board, index) in taskStore.tasks"
-              :key="index"
-              class="p-2 rounded-2xl"
-              :class="
-                index == taskStore.selectedBoardIndex
-                  ? 'bg-purple-500 text-white'
-                  : ''
-              "
-              @click="changeActiveBoard(index)"
-            >
-              {{ board.name }}
-            </li> -->
             <div
               v-for="(board, index) in taskStore.boards"
               :key="board.id"
@@ -34,7 +21,7 @@
                 @click="changeBoard(index)"
                 :to="{ name: 'BoardDetails', params: { id: board.id } }"
               >
-                <div>
+                <div class="flex item-center space-x-2">
                   <img src="@/assets/images/icon-board.svg" alt="" />
                   <h4>{{ board.name }}</h4>
                 </div>
@@ -91,6 +78,18 @@ export default {
     // const changeActiveBoard = (index) => {
     //   taskStore.selectedBoard = taskStore.boards[index];
     // };
+    //fetch board to set selectedBoard
+    taskStore.fetchBoards().then(() => {
+      taskStore.fetchColumns(taskStore.selectedBoard.id).then(() => {
+        taskStore.fetchCards(taskStore.selectedBoard.id).then(() => {
+          //fetch subtask for each card
+          for (const card of taskStore.cards) {
+            taskStore.fetchSubtasks(card.id);
+          }
+        });
+      });
+      isLoading.value = false; // Set isLoading to false once data is loaded
+    });
     const changeBoard = (index) => {
       taskStore.selectedBoard = taskStore.boards[index];
     };

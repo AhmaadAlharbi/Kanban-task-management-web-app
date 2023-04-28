@@ -9,7 +9,7 @@ export const useTaskStore = defineStore("taskStore", {
     columns: [],
     cards: [],
     subtasks: [],
-    spinner: true,
+    isLoading: true,
   }),
   getters: {
     boardNames: (state) => state.boards.map((board) => board.name),
@@ -36,6 +36,8 @@ export const useTaskStore = defineStore("taskStore", {
       this.selectedBoard = this.boards[0];
     },
     async fetchColumns(boardId) {
+      this.isLoading = true;
+
       if (!boardId) {
         return;
       }
@@ -44,9 +46,11 @@ export const useTaskStore = defineStore("taskStore", {
         .where("board_id", "==", boardId)
         .get();
       this.columns = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      this.spinner = false;
+      this.isLoading = false;
     },
     async fetchCards(boardId) {
+      this.isLoading = true;
+
       if (!boardId) {
         return;
       }
@@ -69,6 +73,7 @@ export const useTaskStore = defineStore("taskStore", {
           id: doc.id,
         }));
       }
+      this.isLoading = false;
     },
     async fetchSubtasks(cardId) {
       if (!cardId) {
