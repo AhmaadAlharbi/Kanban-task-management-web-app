@@ -30,8 +30,15 @@
                   board.id === taskStore.selectedBoard.id,
               }"
             >
-              <img src="@/assets/images/icon-board.svg" alt="" />
-              <h4 @click="changeBoard(index)">{{ board.name }}</h4>
+              <router-link
+                @click="changeBoard(index)"
+                :to="{ name: 'BoardDetails', params: { id: board.id } }"
+              >
+                <div>
+                  <img src="@/assets/images/icon-board.svg" alt="" />
+                  <h4>{{ board.name }}</h4>
+                </div>
+              </router-link>
             </div>
 
             <li @click="addBoard = true" class="">+ Create a New Board</li>

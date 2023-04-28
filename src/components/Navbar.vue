@@ -1,19 +1,36 @@
 <template>
-  <div class="flex flex-col w-full">
-    <nav class="bg-white h-20">
-      <ul class="flex justify-between items-center mt-4 px-10">
-        <li class="text-2xl font-bold">Platform Launch</li>
-        <li class="bg-purple-500 py-2 px-2 text-white cursor-pointer">
+  <nav class="bg-white h-20">
+    <ul class="flex justify-between items-center px-10">
+      <li class="text-2xl font-bold">
+        {{ taskStore.selectedBoard.name }} - {{ taskStore.selectedBoard.id }}
+      </li>
+      <div class="flex items-center space-x-4 justify-around">
+        <li
+          @click="addTask = true"
+          class="bg-purple-500 py-2 px-2 text-white cursor-pointer"
+        >
           + Add a New Task
         </li>
-      </ul>
-    </nav>
-    <h1 class="bg-white-400">wdas</h1>
-  </div>
+        <img
+          @click="cardMenuIcon = !cardMenuIcon"
+          class="cursor-pointer"
+          src="@/assets/images/icon-vertical-ellipsis.svg"
+          alt=""
+        />
+      </div>
+    </ul>
+  </nav>
 </template>
 
 <script>
-export default {};
+import { useTaskStore } from "../stores/TaskStore";
+
+export default {
+  setup() {
+    const taskStore = useTaskStore();
+    return { taskStore };
+  },
+};
 </script>
 
 <style>

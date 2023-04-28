@@ -9,27 +9,6 @@
     </p>
   </div>
   <div v-else class="flex flex-col w-full">
-    <nav class="bg-white h-20">
-      <ul class="flex justify-between items-center mt-4 px-10">
-        <li class="text-2xl font-bold">
-          {{ taskStore.selectedBoard.name }} - {{ taskStore.selectedBoard.id }}
-        </li>
-        <div class="flex items-center space-x-4 justify-around">
-          <li
-            @click="addTask = true"
-            class="bg-purple-500 py-2 px-2 text-white cursor-pointer"
-          >
-            + Add a New Task
-          </li>
-          <img
-            @click="cardMenuIcon = !cardMenuIcon"
-            class="cursor-pointer"
-            src="@/assets/images/icon-vertical-ellipsis.svg"
-            alt=""
-          />
-        </div>
-      </ul>
-    </nav>
     <nav
       v-if="cardMenuIcon"
       class="absolute right-0 top-20 z-20 bg-white shadow-lg px-10 py-5"
