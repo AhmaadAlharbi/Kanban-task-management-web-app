@@ -44,9 +44,16 @@
         <div
           class="bg-gray-200 p-2 my-2 rounded-lg flex items-center hover:bg-gray-100"
         >
-          <input v-model="sub.isCompleted" type="checkbox" class="mr-2" />
+          <input
+            @change="updateSubtask(sub)"
+            v-model="sub.isCompleted"
+            type="checkbox"
+            class="mr-2"
+          />
           <div class="flex-1 flex justify-between items-center">
-            <h1>{{ sub.title }}</h1>
+            <h1 :class="{ 'line-through italic': sub.isCompleted }">
+              {{ sub.title }}
+            </h1>
 
             <p>
               <i
@@ -104,7 +111,10 @@ export default {
   components: { EditTask },
   setup(props) {
     const taskStore = useTaskStore();
-
+    const updateSubtask = async (subtask) => {
+      taskStore.updateSubtasks(subtask.card_id, [subtask]);
+    };
+    taskStore.fetchSubtasks(props.selectedCard.id);
     const subtasks = ref([]);
     // Fetch subtasks based on the selected card id
     watch(
@@ -148,13 +158,15 @@ export default {
         }
       });
     };
-    const cardCompletedSubtasksCount = (card) => {
-      const completedSubtasks = taskStore.subtasks.filter(
-        (subtask) => subtask.card_id === card.id && subtask.isCompleted
+    const cardCompletedSubtasksCount = () => {
+      const completedSubtasks = props.selectedCard.subtasks.filter(
+        (subtask) => subtask.isCompleted
       );
       return completedSubtasks.length;
     };
+
     return {
+      updateSubtask,
       cardCompletedSubtasksCount,
       subtasks,
       selectedColumnId,

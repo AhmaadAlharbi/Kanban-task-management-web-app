@@ -27,7 +27,7 @@
 
           <!--- --->
           <div
-            v-for="(col, index) in taskStore.columns"
+            v-for="(col, index) in BoardColumns"
             :key="index"
             class="flex items-center mb-2"
           >
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
 import { timestamp } from "@/firebase/config";
 
@@ -85,6 +85,11 @@ export default {
         name: "",
       });
     };
+    const BoardColumns = computed(() => {
+      return taskStore.columns.filter(
+        (col) => col.board_id === taskStore.selectedBoard.id
+      );
+    });
     const removeColumns = (index) => {
       taskStore.columns.value.splice(index, 1);
     };
@@ -127,6 +132,7 @@ export default {
     };
 
     return {
+      BoardColumns,
       taskStore,
       columns,
       name,

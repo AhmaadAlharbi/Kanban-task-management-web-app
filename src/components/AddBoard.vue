@@ -98,6 +98,10 @@ export default {
         console.error("Error adding board:", error);
       }
     };
+    onMounted(() => {
+      // Pre-populate columns array with an empty column object
+      columns.value = [{ board_id: taskStore.latestBoard.id, name: "" }];
+    });
     return {
       taskStore,
       columns,

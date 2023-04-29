@@ -3,43 +3,11 @@
     <Spinner />
   </div>
   <div v-else>
-    <div v-if="taskStore.columns">
-      <div class="flex justify-around mt-3">
-        <div
-          class="flex flex-col"
-          v-for="col in columnCardsCount"
-          :key="col.id"
-        >
-          <h1 class="px-2">
-            {{ col.name }}({{ taskStore.getColumnCardsCount(col.id) }})
-          </h1>
-
-          <div v-if="taskStore.cards">
-            <!-- Loop through the cards -->
-            <div
-              v-for="card in taskStore.cards"
-              :key="card.id"
-              @click="showTaskDetails(card)"
-            >
-              <!-- Only display the card if it belongs to the current column -->
-              <div v-if="card.column_id === col.id">
-                <div
-                  @click="selectedCard = card"
-                  class="flex flex-col shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
-                >
-                  <!-- Display the card title -->
-                  <p class="font-bold" v-if="card">{{ card.title }}</p>
-                  <p v-if="card">
-                    {{ cardCompletedSubtasksCount(card) }} of
-                    {{ card.subtasks.length }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Board
+      :columnCardsCount="columnCardsCount"
+      :cardCompletedSubtasksCount="cardCompletedSubtasksCount"
+      @card-selected="showTaskDetails"
+    />
     <div v-if="showCardDetails">
       <TaskDetails
         :selectedCard="selectedCard"
@@ -55,23 +23,22 @@
 <script>
 import { computed, ref, watch } from "vue";
 import { useTaskStore } from "../stores/TaskStore";
-import AddTask from "../components/AddTask.vue";
 import EditBoard from "../components/EditBoard.vue";
 import TaskDetails from "../components/TaskDetails.vue";
 import Spinner from "../components/Spinner.vue";
+import Board from "../components/Board.vue";
 
 export default {
   props: ["id"],
-  components: { AddTask, TaskDetails, EditBoard, Spinner },
+  components: { TaskDetails, EditBoard, Spinner, Board },
 
   setup(props) {
     const taskStore = useTaskStore();
     const selectedCard = ref("");
     const isLoading = ref(true);
-    const addTask = ref(false);
-    const cardMenuIcon = ref(false);
     const editBoard = ref(false);
     const showCardDetails = ref(false);
+
     taskStore.fetchColumns(props.id).then(() => {
       taskStore.fetchCards(props.id).then(() => {
         // Fetch subtask for each card
@@ -79,7 +46,9 @@ export default {
           taskStore.fetchSubtasks(card.id);
         }
       });
+      isLoading.value = false; // Set isLoading to false once data is loaded
     });
+
     const columnCardsCount = computed(() => {
       return taskStore.columns.map((col) => {
         return {
@@ -90,6 +59,7 @@ export default {
         };
       });
     });
+
     // Define computed property to calculate completed subtasks count
     const cardCompletedSubtasksCount = (card) => {
       const completedSubtasks = taskStore.subtasks.filter(
@@ -97,10 +67,12 @@ export default {
       );
       return completedSubtasks.length;
     };
+
     const showTaskDetails = (card) => {
       selectedCard.value = card;
       showCardDetails.value = true;
     };
+
     watch(
       () => props.id,
       () => {
@@ -114,16 +86,15 @@ export default {
         });
       }
     );
+
     return {
       columnCardsCount,
       isLoading,
-      cardMenuIcon,
       editBoard,
       showTaskDetails,
       selectedCard,
       showCardDetails,
       taskStore,
-      addTask,
       cardCompletedSubtasksCount,
     };
   },

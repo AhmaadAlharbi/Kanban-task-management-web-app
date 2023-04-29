@@ -1,7 +1,9 @@
 <template>
   <div class="bg-white shadow-xl py-6 w-80 h-screen px-2">
     <div class="">
-      <img src="@/assets/images/logo-dark.svg" alt="" />
+      <router-link :to="{ name: 'Home' }">
+        <img src="@/assets/images/logo-dark.svg" alt="" />
+      </router-link>
       <div class="">
         <p class="uppercase text-gray-500 my-5 px-3">
           all boards ({{ taskStore.boards.length }})
@@ -34,7 +36,7 @@
       </div>
     </div>
     <div v-if="addBoard">
-      <AddBoard @close="addboard = false" />
+      <AddBoard @close="addBoard = false" />
     </div>
     <div
       class="flex items-center space-x-3 absolute bottom-10 justify-center left-5 bg-gray-200 px-10"
