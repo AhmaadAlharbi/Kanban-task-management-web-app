@@ -1,7 +1,7 @@
 <template>
   <div class="px-2 mx-auto">
     <h1
-      class="text-lg font-bold mb-4"
+      class="text-md font-bold mb-4 text-myGray-medium"
       v-if="col.board_id === taskStore.selectedBoard.id"
     >
       {{ col.name }}({{ taskStore.getColumnCardsCount(col.id) }})
@@ -29,6 +29,9 @@ export default defineComponent({
   props: {
     col: {
       type: Object,
+      required: true,
+    },
+    index: {
       required: true,
     },
     cardCompletedSubtasksCount: {

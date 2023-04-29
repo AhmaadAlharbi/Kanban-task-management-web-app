@@ -6,7 +6,9 @@
           <img src="@/assets/images/logo-dark.svg" alt="" />
         </router-link>
         <div class="mt-6">
-          <p class="uppercase text-gray-500 mb-2 px-3">
+          <p
+            class="text-myGray-medium font-bold mb-2 px-3 uppercase tracking-wider"
+          >
             all boards ({{ taskStore.boards.length }})
           </p>
           <nav>
@@ -14,10 +16,9 @@
               <div
                 v-for="(board, index) in taskStore.boards"
                 :key="board.id"
-                class="flex items-center space-x-3 py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors duration-300"
+                class="flex items-center space-x-3 py-2 px-4 rounded-lg hover:bg-myLavender transition-colors duration-300"
                 :class="{
-                  'bg-purple-500 text-white':
-                    board.id === taskStore.selectedBoard.id,
+                  'bg-myPurple': board.id === taskStore.selectedBoard.id,
                 }"
               >
                 <router-link
@@ -26,7 +27,16 @@
                   class="flex items-center space-x-2"
                 >
                   <img src="@/assets/images/icon-board.svg" alt="" />
-                  <h4 class="font-medium text-base">{{ board.name }}</h4>
+                  <h4
+                    class="text-base font-bold"
+                    :class="{
+                      'text-myGray-medium':
+                        board.id !== taskStore.selectedBoard.id,
+                      'text-white': board.id === taskStore.selectedBoard.id,
+                    }"
+                  >
+                    {{ board.name }}
+                  </h4>
                 </router-link>
               </div>
 
@@ -35,12 +45,12 @@
                 class="cursor-pointer flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300"
               >
                 <img
-                  src="@/assets/images/icon-add-board.svg"
+                  src="../assets/images/icon-board.svg"
                   alt=""
                   class="w-5 h-5"
                 />
-                <span class="text-sm font-medium text-gray-600"
-                  >Create a New Board</span
+                <span class="text-md font-bold text-myPurple"
+                  >+Create a New Board</span
                 >
               </li>
             </div>

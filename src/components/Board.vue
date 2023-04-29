@@ -5,9 +5,25 @@
     </div>
     <div v-if="taskStore.columns && !taskStore.isLoading">
       <div class="mt-3">
-        <div class="flex">
-          <div class="flex-1" v-for="col in taskStore.columns" :key="col.id">
+        <div
+          class="flex md:overflow-x-auto sm:overflow-x-auto whitespace-no-wrap max-w-5xl"
+        >
+          <div
+            class="flex-1"
+            v-for="(col, index) in taskStore.columns"
+            :key="col.id"
+            :index="index"
+          >
             <Column :col="col" />
+          </div>
+          <div
+            class="min-h-screen px-10 flex justify-center items-center bg-myGray-light"
+          >
+            <button
+              class="text-2xl font-bold text-myGray-medium hover:text-myPurple transition-colors duration-150"
+            >
+              + New Column
+            </button>
           </div>
         </div>
       </div>
