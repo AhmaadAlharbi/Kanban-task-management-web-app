@@ -1,6 +1,6 @@
 <template>
   <nav class="bg-white h-20">
-    <ul class="flex justify-between items-center px-10 py-5">
+    <ul class="flex justify-between items-center px-4 md:px-10 py-5">
       <li class="text-2xl font-bold">
         {{ taskStore.selectedBoard.name }}
       </li>
@@ -51,6 +51,7 @@
     <EditBoard :selectedBoard="selectedBoard" @close="editBoard = false" />
   </div>
 </template>
+
 
 <script>
 import { ref } from "vue";

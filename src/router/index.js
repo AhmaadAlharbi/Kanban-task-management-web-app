@@ -31,6 +31,7 @@ const router = createRouter({
               });
             });
           });
+          taskStore.selectedBoard = taskStore.boards[0];
         },
 
         beforeRouteUpdate: (to, from, next) => {
@@ -47,6 +48,7 @@ const router = createRouter({
               });
             });
           });
+          taskStore.selectedBoard = taskStore.boards[0];
         },
       },
     },

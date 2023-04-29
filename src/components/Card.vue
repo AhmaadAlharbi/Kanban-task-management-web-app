@@ -2,8 +2,7 @@
   <div v-for="card in boardCards" :key="card.id" @click="showTaskDetails(card)">
     <div v-if="card.column_id === col.id">
       <div
-        @click="selectedCard = card"
-        class="flex flex-col shadow-md mt-3 py-3 px-6 bg-white w-80 mb-8"
+        class="flex flex-col shadow-md mt-3 py-3 px-6 bg-white w-full md:w-80 mb-8"
       >
         <!-- Display the card title -->
         <p class="font-bold" v-if="card">{{ card.title }}</p>
@@ -22,6 +21,7 @@
     />
   </div>
 </template>
+
 
 <script>
 import { computed, defineComponent } from "vue";

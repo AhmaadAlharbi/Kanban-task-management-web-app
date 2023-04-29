@@ -1,16 +1,25 @@
 <template>
   <div class="flex flex-col w-full">
-    <div v-if="taskStore.isLoading" class="flex justify-center items-cente">
+    <div v-if="taskStore.isLoading" class="flex justify-center items-center">
       <Spinner />
     </div>
 
     <div v-if="editBoard">
       <EditBoard :selectedBoard="selectedBoard" @close="editBoard = false" />
     </div>
-    <Board :columnCardsCount="taskStore.columns" />
+
+    <div class="flex flex-col lg:flex-row w-full">
+      <div class="w-full lg:w-3/4 px-4">
+        <div class="flex flex-col lg:flex-row">
+          <Board :columnCardsCount="taskStore.columns" class="lg:w-3/4" />
+        </div>
+      </div>
+      <div v-if="addTask" class="hidden lg:block lg:w-1/4 px-4">
+        <AddTask class="mb-8" />
+      </div>
+    </div>
   </div>
 </template>
-
 <script>
 import { defineComponent, ref, computed, watch } from "vue";
 import { useTaskStore } from "../stores/TaskStore";

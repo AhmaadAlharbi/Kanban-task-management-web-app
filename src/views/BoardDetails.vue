@@ -1,22 +1,34 @@
 <template>
-  <div v-if="taskStore.isLoading" class="flex justify-center items-cente">
-    <Spinner />
-  </div>
-  <div v-else>
-    <Board
-      :columnCardsCount="columnCardsCount"
-      :cardCompletedSubtasksCount="cardCompletedSubtasksCount"
-      @card-selected="showTaskDetails"
-    />
-    <div v-if="showCardDetails">
-      <TaskDetails
-        :selectedCard="selectedCard"
-        @close="showCardDetails = false"
-      />
+  <div class="w-full h-full flex flex-col items-center">
+    <div
+      v-if="taskStore.isLoading"
+      class="flex justify-center items-center h-screen"
+    >
+      <Spinner />
     </div>
-  </div>
-  <div v-if="editBoard">
-    <EditBoard :selectedBoard="selectedBoard" @close="editBoard = false" />
+    <div v-else class="w-full h-full">
+      <Board
+        class="w-full h-full"
+        :columnCardsCount="columnCardsCount"
+        :cardCompletedSubtasksCount="cardCompletedSubtasksCount"
+        @card-selected="showTaskDetails"
+      />
+      <div
+        v-if="showCardDetails"
+        class="fixed z-50 top-0 left-0 w-full h-full flex justify-center items-center"
+      >
+        <TaskDetails
+          :selectedCard="selectedCard"
+          @close="showCardDetails = false"
+        />
+      </div>
+    </div>
+    <div
+      v-if="editBoard"
+      class="fixed z-50 top-0 left-0 w-full h-full flex justify-center items-center"
+    >
+      <EditBoard :selectedBoard="selectedBoard" @close="editBoard = false" />
+    </div>
   </div>
 </template>
 

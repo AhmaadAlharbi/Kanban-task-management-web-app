@@ -1,6 +1,9 @@
 <template>
-  <div>
-    <h1 class="px-2 mx-auto" v-if="col.board_id === taskStore.selectedBoard.id">
+  <div class="px-2 mx-auto">
+    <h1
+      class="text-lg font-bold mb-4"
+      v-if="col.board_id === taskStore.selectedBoard.id"
+    >
       {{ col.name }}({{ taskStore.getColumnCardsCount(col.id) }})
     </h1>
 
@@ -15,6 +18,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { defineComponent, computed } from "vue";
