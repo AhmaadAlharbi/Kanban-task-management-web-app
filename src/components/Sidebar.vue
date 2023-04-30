@@ -62,6 +62,7 @@
             class="w-5 h-5"
           />
         </div>
+
         <p
           @click="$emit('close-sidebar')"
           class="text-gray-500 text-sm cursor-pointer flex justify-center items-center space-x-2 mt-5 text-center"

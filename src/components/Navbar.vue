@@ -7,7 +7,7 @@
       <div class="flex items-center space-x-4 justify-around">
         <li
           @click="addTask = true"
-          class="bg-myPurple hover:bg-myLavender rounded-full py-2 px-4 text-white cursor-pointer"
+          class="bg-myPurple text-sm font-bold hover:bg-myLavender rounded-full py-2 px-4 text-white cursor-pointer"
         >
           + Add a New Task
         </li>
