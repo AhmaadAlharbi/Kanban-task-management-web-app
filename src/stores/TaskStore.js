@@ -10,6 +10,7 @@ export const useTaskStore = defineStore("taskStore", {
     cards: [],
     subtasks: [],
     isLoading: true,
+    theme: "light",
   }),
   getters: {
     boardNames: (state) => state.boards.map((board) => board.name),

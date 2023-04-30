@@ -1,7 +1,7 @@
 <template>
-  <nav class="bg-white h-20">
+  <nav class="bg-white dark:bg-myGray-darker h-20">
     <ul class="flex justify-between items-center px-4 md:px-10 py-5">
-      <li class="text-2xl font-bold">
+      <li class="text-2xl font-bold dark:text-white">
         {{ taskStore.selectedBoard.name }}
       </li>
       <div class="flex items-center space-x-4 justify-around">
