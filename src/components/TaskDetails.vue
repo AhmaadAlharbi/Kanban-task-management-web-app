@@ -70,7 +70,6 @@
         <select
           class="bg-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
           v-model="selectedColumnId"
-          @change="$emit('column-updated', selectedColumnId)"
         >
           <option value="" disabled>Select a column</option>
           <option
@@ -168,12 +167,9 @@ export default {
     watch(selectedColumnId, (newVal, oldVal) => {
       if (newVal === undefined) return;
 
-      const updatedCard = {
-        ...props.selectedCard,
+      taskStore.updateCard(props.selectedCard, {
         column_id: newVal,
-      };
-
-      taskStore.updateCard(updatedCard);
+      });
       taskStore.fetchColumns(taskStore.selectedBoard.id);
     });
 
