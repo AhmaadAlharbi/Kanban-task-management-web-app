@@ -50,7 +50,7 @@
           <div class="flex justify-center my-7">
             <button
               @click="addColumns"
-              class="bg-purple-500 w-full hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+              class="bg-myLavender w-full hover:bg-myPurple text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
               type="button"
             >
               Add new columns
@@ -58,7 +58,7 @@
           </div>
 
           <button
-            class="bg-purple-300 w-full hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+            class="bg-myPurple hover:bg-myLavender w-full text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
           >
             Create Board
           </button>

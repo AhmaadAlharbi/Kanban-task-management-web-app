@@ -12,6 +12,8 @@
         :columnCardsCount="columnCardsCount"
         :cardCompletedSubtasksCount="cardCompletedSubtasksCount"
         @card-selected="showTaskDetails"
+        :selectedBoard="selectedBoard"
+        :showEditBoard="editBoard"
       />
       <div
         v-if="showCardDetails"
@@ -47,12 +49,18 @@ export default {
   setup(props) {
     const taskStore = useTaskStore();
     const selectedCard = ref("");
+    const showEditBoard = ref(false);
+    const handleClick = () => {
+      showEditBoard.value = true;
+    };
     const isLoading = ref(true);
     const editBoard = ref(false);
     const showCardDetails = ref(false);
-
-    taskStore.fetchColumns(props.id).then(() => {
-      taskStore.fetchCards(props.id).then(() => {
+    const selectedBoard = ref(taskStore.selectedBoard); // Initialize selectedBoard with taskStore.selectedBoard
+    // Set the selected board when the component is mounted
+    taskStore.setSelectedBoard(props.id);
+    taskStore.fetchColumns(taskStore.selectedBoard.id).then(() => {
+      taskStore.fetchCards(taskStore.selectedBoard.id).then(() => {
         // Fetch subtask for each card
         for (const card of taskStore.cards) {
           taskStore.fetchSubtasks(card.id);
@@ -86,7 +94,7 @@ export default {
     };
 
     watch(
-      () => props.id,
+      () => selectedBoard,
       () => {
         taskStore.fetchColumns(taskStore.selectedBoard.id).then(() => {
           taskStore.fetchCards(taskStore.selectedBoard.id).then(() => {
@@ -98,8 +106,12 @@ export default {
         });
       }
     );
+    console.log("selectedBoard", selectedBoard.value);
 
     return {
+      handleClick,
+      showEditBoard,
+      selectedBoard,
       columnCardsCount,
       isLoading,
       editBoard,

@@ -105,6 +105,8 @@ export const useTaskStore = defineStore("taskStore", {
           .add({ board_id: boardId, name });
         const newColumn = { id: res.id, board_id: boardId, name };
         this.columns.push(newColumn);
+        // Reload the page
+        location.reload();
       } catch (error) {
         console.error("Error adding column:", error);
       }
@@ -395,6 +397,15 @@ export const useTaskStore = defineStore("taskStore", {
         }
       } catch (error) {
         console.error("Error updating subtasks:", error);
+      }
+    },
+    setSelectedBoard(boardId) {
+      const board = this.boards.find((b) => b.id === boardId);
+      if (board) {
+        this.selectedBoard = board;
+      } else {
+        // Handle the case where the board is not found
+        console.error(`Board with ID ${boardId} not found`);
       }
     },
   },

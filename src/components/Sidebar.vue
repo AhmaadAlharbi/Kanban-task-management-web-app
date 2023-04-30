@@ -12,47 +12,25 @@
             all boards ({{ taskStore.boards.length }})
           </p>
           <nav>
-            <div class="space-y-4 px-3 cursor-pointer">
-              <div
-                v-for="(board, index) in taskStore.boards"
-                :key="board.id"
-                class="flex items-center space-x-3 py-2 px-4 rounded-lg hover:bg-myLavender transition-colors duration-300"
+            <div
+              v-for="(board, index) in taskStore.boards"
+              :key="board.id"
+              class="flex cursor-pointer items-center space-x-3 py-2 px-4 rounded-lg hover:bg-myLavender transition-colors duration-300"
+              :class="{
+                'bg-myPurple': board.id === taskStore.selectedBoard.id,
+              }"
+            >
+              <img src="@/assets/images/icon-board.svg" alt="" />
+              <h4
+                @click="taskStore.selectedBoard = taskStore.boards[index]"
+                class="text-base font-bold"
                 :class="{
-                  'bg-myPurple': board.id === taskStore.selectedBoard.id,
+                  'text-myGray-medium': board.id !== taskStore.selectedBoard.id,
+                  'text-white': board.id === taskStore.selectedBoard.id,
                 }"
               >
-                <router-link
-                  @click="changeBoard(index)"
-                  :to="{ name: 'BoardDetails', params: { id: board.id } }"
-                  class="flex items-center space-x-2"
-                >
-                  <img src="@/assets/images/icon-board.svg" alt="" />
-                  <h4
-                    class="text-base font-bold"
-                    :class="{
-                      'text-myGray-medium':
-                        board.id !== taskStore.selectedBoard.id,
-                      'text-white': board.id === taskStore.selectedBoard.id,
-                    }"
-                  >
-                    {{ board.name }}
-                  </h4>
-                </router-link>
-              </div>
-
-              <li
-                @click="addBoard = true"
-                class="cursor-pointer flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300"
-              >
-                <img
-                  src="../assets/images/icon-board.svg"
-                  alt=""
-                  class="w-5 h-5"
-                />
-                <span class="text-md font-bold text-myPurple"
-                  >+Create a New Board</span
-                >
-              </li>
+                {{ board.name }}
+              </h4>
             </div>
           </nav>
         </div>
@@ -101,10 +79,14 @@
 import { useTaskStore } from "../stores/TaskStore";
 import AddBoard from "../components/AddBoard.vue";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+
 export default {
   components: { AddBoard },
   setup() {
     const taskStore = useTaskStore();
+    const router = useRouter();
+
     // taskStore.fetchBoards();
     const activeBoardIndex = ref(0);
     const addBoard = ref(false);
@@ -124,7 +106,12 @@ export default {
     });
     const changeBoard = (index) => {
       taskStore.selectedBoard = taskStore.boards[index];
+      router.push({
+        name: "BoardDetails",
+        params: { id: taskStore.selectedBoard.id },
+      });
     };
+
     const handleNewBoard = () => {
       const name = ref("");
       taskStore.addBoard();

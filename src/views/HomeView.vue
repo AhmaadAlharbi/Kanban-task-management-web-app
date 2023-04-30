@@ -4,10 +4,6 @@
       <Spinner />
     </div>
 
-    <div v-if="editBoard">
-      <EditBoard :selectedBoard="selectedBoard" @close="editBoard = false" />
-    </div>
-
     <div class="flex flex-col lg:flex-row w-full">
       <div class="w-full px-4">
         <div class="flex flex-col lg:flex-row">

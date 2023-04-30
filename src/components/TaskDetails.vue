@@ -70,6 +70,7 @@
         <select
           class="bg-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
           v-model="selectedColumnId"
+          @change="$emit('column-updated', selectedColumnId)"
         >
           <option value="" disabled>Select a column</option>
           <option
@@ -88,7 +89,7 @@
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         @click.stop="$emit('close')"
       >
-        Close Modal
+        Close
       </button>
     </div>
   </div>
@@ -164,6 +165,17 @@ export default {
       );
       return completedSubtasks.length;
     };
+    watch(selectedColumnId, (newVal, oldVal) => {
+      if (newVal === undefined) return;
+
+      const updatedCard = {
+        ...props.selectedCard,
+        column_id: newVal,
+      };
+
+      taskStore.updateCard(updatedCard);
+      taskStore.fetchColumns(taskStore.selectedBoard.id);
+    });
 
     return {
       updateSubtask,

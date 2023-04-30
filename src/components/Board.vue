@@ -20,6 +20,8 @@
             class="min-h-screen px-10 flex justify-center items-center bg-myGray-light"
           >
             <button
+              type="button"
+              @click="handleClick"
               class="text-2xl font-bold text-myGray-medium hover:text-myPurple transition-colors duration-150"
             >
               + New Column
@@ -40,15 +42,16 @@ import { computed, ref } from "vue";
 import { useTaskStore } from "../stores/TaskStore";
 import TaskDetails from "../components/TaskDetails.vue";
 import Column from "../components/Column.vue";
+import EditBoard from "../components/EditBoard.vue";
 
 export default {
-  props: ["columnCardsCount", "cardCompletedSubtasksCount"],
-  components: { TaskDetails, Column },
+  props: ["cardCompletedSubtasksCount", "selectedBoard"],
+  components: { TaskDetails, Column, EditBoard },
   setup(props) {
     const taskStore = useTaskStore();
     const selectedCard = ref("");
     const showCardDetails = ref(false);
-
+    const editBoard = ref(false);
     // Define computed property to calculate completed subtasks count
     const cardCompletedSubtasksCount = (card) => {
       const completedSubtasks = taskStore.subtasks.filter(
@@ -60,13 +63,20 @@ export default {
       selectedCard.value = card;
       showCardDetails.value = true;
     };
+    const handleClick = () => {
+      editBoard.value = true;
+      // alert("test");
+    };
+
     return {
+      handleClick,
       showTaskDetails,
       selectedCard,
       taskStore,
       selectedCard,
       cardCompletedSubtasksCount,
       columnCardsCount: props.columnCardsCount,
+      editBoard,
     };
   },
 };
