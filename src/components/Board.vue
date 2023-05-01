@@ -7,7 +7,7 @@
       class="overflow-x-auto"
       v-if="taskStore.columns && !taskStore.isLoading"
     >
-      <div class="mt-3">
+      <div class="mt-10 mx-auto">
         <div class="flex overflow-x-auto whitespace-no-wrap min-w-full">
           <div
             class="flex-1"
@@ -18,7 +18,7 @@
             <Column :col="col" />
           </div>
           <div
-            class="p-10 h-[900px] border-dashed border border-myPurple flex justify-center items-center bg-myGray-light dark:bg-myGray-darker"
+            class="p-10 min-h-[650px] flex justify-center items-center bg-myGray-light dark:bg-myGray-darker"
           >
             <button
               type="button"

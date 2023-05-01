@@ -21,7 +21,7 @@
             <div
               v-for="(board, index) in taskStore.boards"
               :key="board.id"
-              class="flex cursor-pointer items-center space-x-3 py-2 px-4 rounded-lg hover:bg-myLavender transition-colors duration-300"
+              class="flex cursor-pointer space-x-3 py-2 px-4 rounded-lg hover:bg-myLavender transition-colors duration-300"
               :class="{
                 'bg-myPurple': board.id === taskStore.selectedBoard.id,
               }"
@@ -38,6 +38,11 @@
                 {{ board.name }}
               </h4>
             </div>
+            <h4
+              class="text-base font-bold text-myGray-medium hover:text-myPurple cursor-pointer px-4 mt-4"
+            >
+              + Add new Board
+            </h4>
           </nav>
         </div>
       </div>
@@ -96,24 +101,8 @@ export default {
   setup() {
     const taskStore = useTaskStore();
     const router = useRouter();
-
-    // taskStore.fetchBoards();
     const activeBoardIndex = ref(0);
     const addBoard = ref(false);
-    // const changeActiveBoard = (index) => {
-    //   taskStore.selectedBoard = taskStore.boards[index];
-    // };
-    //fetch board to set selectedBoard
-    // taskStore.fetchBoards().then(() => {
-    //   taskStore.fetchColumns(taskStore.selectedBoard.id).then(() => {
-    //     taskStore.fetchCards(taskStore.selectedBoard.id).then(() => {
-    //       //fetch subtask for each card
-    //       for (const card of taskStore.cards) {
-    //         taskStore.fetchSubtasks(card.id);
-    //       }
-    //     });
-    //   });
-    // });
     const changeBoard = (index) => {
       taskStore.selectedBoard = taskStore.boards[index];
       router.push({
@@ -150,7 +139,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style >
 .switch {
   position: relative;
   display: inline-block;

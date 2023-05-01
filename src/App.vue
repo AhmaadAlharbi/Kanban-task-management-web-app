@@ -1,7 +1,8 @@
 <template>
   <div class="flex flex-row">
-    <transition name="sidebar">
+    <transition name="sidebar h">
       <Sidebar
+        class="hidden md:flex"
         v-if="sidebarComponent"
         @close-sidebar="sidebarComponent = false"
       />
