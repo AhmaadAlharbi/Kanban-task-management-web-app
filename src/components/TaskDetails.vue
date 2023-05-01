@@ -5,10 +5,10 @@
     @click.self="$emit('close')"
   >
     <div
-      class="bg-white relative w-11/12 md:w-1/2 lg:w-1/3 max-w-2xl p-6 rounded-lg"
+      class="bg-white dark:bg-myGray-darkest relative w-11/12 md:w-1/2 lg:w-1/3 max-w-2xl p-6 rounded-lg"
     >
       <div class="flex justify-between items-center">
-        <h1 class="mb-4 font-bold text-xl" v-if="selectedCard">
+        <h1 class="mb-4 font-bold text-xl dark:text-white" v-if="selectedCard">
           {{ selectedCard.title }}
         </h1>
 
@@ -20,12 +20,12 @@
         />
         <nav
           v-if="cardMenuIcon"
-          class="absolute right-0 top-20 z-20 bg-white shadow-lg px-10 py-5"
+          class="absolute right-0 top-20 z-20 bg-white dark:bg-myGray-darkest shadow-lg px-10 py-5"
         >
           <ul class="space-y-2">
             <li
               @click="EditTask = true"
-              class="cursor-pointer text-gray-400 hover:text-gray-800"
+              class="cursor-pointer text-gray-400 hover:text-gray-800 dark:hover:text-white"
             >
               Edit Task
             </li>
@@ -38,7 +38,7 @@
           </ul>
         </nav>
       </div>
-      <p>
+      <p class="dark:text-white">
         subtasks ( {{ cardCompletedSubtasksCount(selectedCard) }} of
         {{ selectedCard.subtasks.length }} )
       </p>
@@ -68,7 +68,7 @@
         </div>
       </div>
       <div class="mb-4">
-        <label class="mr-2">Current Status</label>
+        <label class="mr-2 dark:text-white">Current Status</label>
         <select
           class="bg-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
           v-model="selectedColumnId"

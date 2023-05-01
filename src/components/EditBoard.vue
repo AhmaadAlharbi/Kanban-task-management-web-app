@@ -3,17 +3,20 @@
     class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
     @click.self="$emit('close')"
   >
-    <div class="bg-white w-11/12 md:w-1/2 lg:w-1/3 p-6 rounded-lg">
-      <h2 class="text-2xl font-bold mb-4">Edit Board</h2>
+    <div
+      class="bg-white dark:bg-myGray-darkest w-11/12 md:w-1/2 lg:w-1/3 p-6 rounded-lg"
+    >
+      <h2 class="text-2xl font-bold mb-4 dark:text-white">Edit Board</h2>
       <form @submit.prevent="handleSubmit" class="max-w-md mx-auto">
         <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="title">
+          <label
+            class="block text-gray-700 dark:text-white font-bold mb-2"
+            for="title"
+          >
             Board Name
-
-            {{ name }}
           </label>
           <input
-            class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="appearance-none dark:bg-myGray-darkest dark:text-white border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="title"
             type="text"
             placeholder="Enter board name"
@@ -21,7 +24,10 @@
           />
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="subtask">
+          <label
+            class="block text-gray-700 dark:text-white font-bold mb-2"
+            for="subtask"
+          >
             Board columns
           </label>
 
@@ -32,7 +38,7 @@
             class="flex items-center mb-2"
           >
             <input
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none mb-4 dark:bg-myGray-darkest dark:text-white border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               :id="'col-' + index"
               type="text"
               v-model="col.name"

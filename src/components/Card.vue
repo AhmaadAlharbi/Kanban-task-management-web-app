@@ -1,8 +1,13 @@
 <template>
-  <div v-for="card in boardCards" :key="card.id" @click="showTaskDetails(card)">
+  <div
+    class="w-80"
+    v-for="card in boardCards"
+    :key="card.id"
+    @click="showTaskDetails(card)"
+  >
     <div v-if="card.column_id === col.id">
       <div
-        class="flex flex-col shadow-md mt-3 py-6 px-6 bg-white dark:bg-myGray-darker dark:text-white w-full md:w-80 mb-8 rounded-xl transition-colors duration-200 cursor-pointer hover:bg-myGray-lightest hover:text-myPurple"
+        class="flex flex-col shadow-md mt-3 p-6 bg-white dark:bg-myGray-darker dark:text-white w-full md:w-80 mb-8 rounded-xl transition-colors duration-200 cursor-pointer hover:bg-myGray-lightest hover:text-myPurple"
       >
         <!-- Display the card title -->
         <p class="font-bold text-md" v-if="card">{{ card.title }}</p>

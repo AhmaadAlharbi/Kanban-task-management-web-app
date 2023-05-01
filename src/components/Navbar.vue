@@ -47,7 +47,7 @@
   </nav>
   <nav
     v-if="cardMenuIcon"
-    class="absolute right-0 top-20 z-20 bg-white shadow-lg px-10 py-5"
+    class="absolute right-0 top-20 z-20 bg-white dark:bg-myGray-darkest shadow-lg px-10 py-5"
   >
     <ul class="space-y-2">
       <li
@@ -55,7 +55,7 @@
           editBoard = true;
           cardMenuIcon = false;
         "
-        class="cursor-pointer text-gray-400 hover:text-gray-800"
+        class="cursor-pointer text-gray-400 hover:text-gray-800 dark:hover:text-white"
       >
         Edit Board
       </li>
