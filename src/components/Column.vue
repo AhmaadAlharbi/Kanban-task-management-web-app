@@ -1,11 +1,18 @@
 <template>
   <div class="px-2 mx-auto">
-    <h1
-      class="text-md font-bold mb-4 text-myGray-medium"
-      v-if="col.board_id === taskStore.selectedBoard.id"
-    >
-      {{ col.name }}({{ taskStore.getColumnCardsCount(col.id) }})
-    </h1>
+    <div class="flex items-center space-x-2">
+      <div
+        class="w-4 h-4 rounded-full"
+        :style="{ backgroundColor: randomColor() }"
+      ></div>
+
+      <h1
+        class="text-md font-bold text-myGray-medium"
+        v-if="col.board_id === taskStore.selectedBoard.id"
+      >
+        {{ col.name }}({{ taskStore.getColumnCardsCount(col.id) }})
+      </h1>
+    </div>
 
     <div v-if="taskStore.cards">
       <!-- Loop through the cards -->
@@ -50,9 +57,16 @@ export default defineComponent({
       taskStore.cards.filter((card) => card.column_id === props.col.id)
     );
 
-    // Show task details when the user clicks on a card
-
+    const randomColor = () => {
+      const letters = "0123456789ABCDEF";
+      let color = "#";
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    };
     return {
+      randomColor,
       taskStore,
       columnCards,
     };

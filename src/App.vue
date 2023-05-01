@@ -14,7 +14,7 @@
       <img src="./assets/images/icon-show-sidebar.svg" alt="" />
     </div>
     <div class="flex-1">
-      <Navbar />
+      <Navbar class="navbar" />
       <RouterView />
     </div>
   </div>
@@ -29,6 +29,11 @@ const sidebarComponent = ref(true);
 </script>
 
 <style scoped>
+.navbar {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
 .sidebar-enter-active,
 .sidebar-leave-active {
   transition: opacity 0.5s ease-in-out;

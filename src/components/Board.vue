@@ -1,13 +1,14 @@
 <template>
-  <div class="flex flex-col w-full">
+  <div class="flex flex-col w-full justify-center items-stretch">
     <div v-if="taskStore.isLoading" class="flex justify-center items-cente">
       <Spinner />
     </div>
-    <div v-if="taskStore.columns && !taskStore.isLoading">
+    <div
+      class="overflow-x-auto"
+      v-if="taskStore.columns && !taskStore.isLoading"
+    >
       <div class="mt-3">
-        <div
-          class="flex md:overflow-x-auto sm:overflow-x-auto whitespace-no-wrap max-w-7xl"
-        >
+        <div class="flex overflow-x-auto whitespace-no-wrap min-w-full">
           <div
             class="flex-1"
             v-for="(col, index) in taskStore.columns"
@@ -17,7 +18,7 @@
             <Column :col="col" />
           </div>
           <div
-            class="min-h-screen px-10 flex justify-center items-center bg-myGray-light dark:bg-myGray-darker"
+            class="p-10 h-[900px] border-dashed border border-myPurple flex justify-center items-center bg-myGray-light dark:bg-myGray-darker"
           >
             <button
               type="button"
@@ -35,7 +36,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import { computed, ref } from "vue";

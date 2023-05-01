@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white dark:bg-myGray-darker shadow-xl py-6 w-80 h-screen px-2 md:w-96"
+    class="bg-white min-h-screen dark:bg-myGray-darker shadow-xl py-6 w-80 px-2 md:w-96"
   >
     <div class="flex flex-col justify-between h-full">
       <div class="mb-6">
@@ -104,16 +104,16 @@ export default {
     //   taskStore.selectedBoard = taskStore.boards[index];
     // };
     //fetch board to set selectedBoard
-    taskStore.fetchBoards().then(() => {
-      taskStore.fetchColumns(taskStore.selectedBoard.id).then(() => {
-        taskStore.fetchCards(taskStore.selectedBoard.id).then(() => {
-          //fetch subtask for each card
-          for (const card of taskStore.cards) {
-            taskStore.fetchSubtasks(card.id);
-          }
-        });
-      });
-    });
+    // taskStore.fetchBoards().then(() => {
+    //   taskStore.fetchColumns(taskStore.selectedBoard.id).then(() => {
+    //     taskStore.fetchCards(taskStore.selectedBoard.id).then(() => {
+    //       //fetch subtask for each card
+    //       for (const card of taskStore.cards) {
+    //         taskStore.fetchSubtasks(card.id);
+    //       }
+    //     });
+    //   });
+    // });
     const changeBoard = (index) => {
       taskStore.selectedBoard = taskStore.boards[index];
       router.push({
