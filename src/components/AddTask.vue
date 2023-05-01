@@ -97,7 +97,7 @@ import { useTaskStore } from "@/stores/TaskStore";
 
 export default {
   setup() {
-    const subtasks = ref([{ title: "", isCompleted: false }]);
+    const subtasks = ref([]);
     const taskStore = useTaskStore();
     // taskStore.fetchBoards().then(() => {
     //   taskStore.fetchColumns(taskStore.selectedBoard.id);
@@ -124,7 +124,10 @@ export default {
           subtasks.value
         )
         .then(() => {
-          location.reload(); // reload the page after the task is added
+          (title.value = ""),
+            (description.value = ""),
+            (subtasks.value = ""),
+            location.reload(); // reload the page after the task is added
         });
     };
 

@@ -16,11 +16,9 @@
 
     <div v-if="taskStore.cards">
       <!-- Loop through the cards -->
-      <div v-for="card in taskStore.cards" :key="card.id">
-        <!-- Only display the card if it belongs to the current column -->
-        <div v-if="taskStore.cards && card.column_id === col.id">
-          <Card :col="col" />
-        </div>
+      <!-- Only display the card if it belongs to the current column -->
+      <div>
+        <Card :col="col" />
       </div>
     </div>
   </div>
