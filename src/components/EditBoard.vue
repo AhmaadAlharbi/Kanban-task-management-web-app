@@ -66,7 +66,7 @@
           <button
             class="bg-myPurple hover:bg-myLavender w-full text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
           >
-            Create Board
+            Update Board
           </button>
         </div>
       </form>

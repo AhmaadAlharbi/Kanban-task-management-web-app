@@ -155,78 +155,67 @@ export const useTaskStore = defineStore("taskStore", {
       }
       try {
         // Prompt the user to confirm the deletion
-        const result = await Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
+        this.isLoading = false;
+
+        // Delete all the cards associated with the board from Firestore
+        const cardsToDelete = this.cards.filter(
+          (card) => card.board_id === boardId
+        );
+        for (const card of cardsToDelete) {
+          await projectFirestore.collection("cards").doc(card.id).delete();
+        }
+
+        // Remove all the cards associated with the board from local state
+        this.cards = this.cards.filter((card) => card.board_id !== boardId);
+
+        // Delete all the subtasks associated with the board from Firestore
+        const subtasksToDelete = this.subtasks.filter((subtask) => {
+          const card = this.cards.find((card) => card.id === subtask.card_id);
+          return card.board_id === boardId;
+        });
+        for (const subtask of subtasksToDelete) {
+          await projectFirestore
+            .collection("subtasks")
+            .doc(subtask.id)
+            .delete();
+        }
+
+        // Remove all the subtasks associated with the board from local state
+        this.subtasks = this.subtasks.filter((subtask) => {
+          const card = this.cards.find((card) => card.id === subtask.card_id);
+          return card.board_id !== boardId;
         });
 
-        if (result.isConfirmed) {
-          // Delete all the cards associated with the board from Firestore
-          const cardsToDelete = this.cards.filter(
-            (card) => card.board_id === boardId
-          );
-          for (const card of cardsToDelete) {
-            await projectFirestore.collection("cards").doc(card.id).delete();
-          }
-
-          // Remove all the cards associated with the board from local state
-          this.cards = this.cards.filter((card) => card.board_id !== boardId);
-
-          // Delete all the subtasks associated with the board from Firestore
-          const subtasksToDelete = this.subtasks.filter((subtask) => {
-            const card = this.cards.find((card) => card.id === subtask.card_id);
-            return card.board_id === boardId;
-          });
-          for (const subtask of subtasksToDelete) {
-            await projectFirestore
-              .collection("subtasks")
-              .doc(subtask.id)
-              .delete();
-          }
-
-          // Remove all the subtasks associated with the board from local state
-          this.subtasks = this.subtasks.filter((subtask) => {
-            const card = this.cards.find((card) => card.id === subtask.card_id);
-            return card.board_id !== boardId;
-          });
-
-          // Delete all the columns associated with the board from Firestore
-          const columnsToDelete = this.columns.filter(
-            (col) => col.board_id === boardId
-          );
-          for (const column of columnsToDelete) {
-            await projectFirestore
-              .collection("columns")
-              .doc(column.id)
-              .delete();
-          }
-
-          // Remove all the columns associated with the board from local state
-          this.columns = this.columns.filter((col) => col.board_id !== boardId);
-
-          // Delete the board from Firestore
-          await projectFirestore.collection("Boards").doc(boardId).delete();
-
-          // Remove the board from local state
-          const index = this.boards.findIndex((board) => board.id === boardId);
-          this.boards.splice(index, 1);
-          this.selectedBoard = this.boards[0];
-          // Show confirmation using SweetAlert
-          await Swal.fire({
-            title: "Board, columns, cards, and subtasks deleted!",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-
-          // Reload the page
-          location.reload();
+        // Delete all the columns associated with the board from Firestore
+        const columnsToDelete = this.columns.filter(
+          (col) => col.board_id === boardId
+        );
+        for (const column of columnsToDelete) {
+          await projectFirestore.collection("columns").doc(column.id).delete();
         }
+
+        // Remove all the columns associated with the board from local state
+        this.columns = this.columns.filter((col) => col.board_id !== boardId);
+
+        // Delete the board from Firestore
+        await projectFirestore.collection("Boards").doc(boardId).delete();
+
+        // Remove the board from local state
+        const index = this.boards.findIndex((board) => board.id === boardId);
+        this.boards.splice(index, 1);
+        this.selectedBoard = this.boards[0];
+        // Show confirmation using SweetAlert
+        await Swal.fire({
+          title: "Board, columns, cards, and subtasks deleted!",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        // Reload the page
+        this.isLoading = true;
+
+        location.reload();
       } catch (error) {
         console.error("Error deleting board and related items:", error);
       }

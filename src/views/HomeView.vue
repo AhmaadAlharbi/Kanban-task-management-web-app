@@ -26,7 +26,14 @@ import Spinner from "../components/Spinner.vue";
 import Column from "../components/Column.vue";
 import Board from "../components/Board.vue";
 export default defineComponent({
-  components: { AddTask, TaskDetails, EditBoard, Spinner, Column, Board },
+  components: {
+    AddTask,
+    TaskDetails,
+    EditBoard,
+    Spinner,
+    Column,
+    Board,
+  },
   setup() {
     const selectedCard = ref("");
     const isLoading = ref(true);

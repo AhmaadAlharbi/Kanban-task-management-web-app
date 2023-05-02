@@ -47,6 +47,7 @@
   </nav>
   <nav
     v-if="cardMenuIcon"
+    @click="cardMenuIcon = false"
     class="absolute right-0 top-20 z-20 bg-white dark:bg-myGray-darkest shadow-lg px-10 py-5"
   >
     <ul class="space-y-2">
@@ -60,9 +61,7 @@
         Edit Board
       </li>
       <li
-        @click="
-          taskStore.deleteBoardAndRelatedItems(taskStore.selectedBoard.id)
-        "
+        @click="deleteCard = true"
         class="cursor-pointer text-red-400 hover:text-red-800"
       >
         Delete board
@@ -75,6 +74,14 @@
   <div v-if="editBoard">
     <EditBoard :selectedBoard="selectedBoard" @close="editBoard = false" />
   </div>
+  <div v-if="deleteCard">
+    <DeleteCard
+      type="board"
+      :title="taskStore.selectedBoard.name"
+      :message="`Are you sure you want to delete the \`${taskStore.selectedBoard.name}\` This action will remove all columns and tasks and cannot be reversed.`"
+      @close="deleteCard = false"
+    />
+  </div>
 </template>
 
 
@@ -84,16 +91,25 @@ import AddTask from "./AddTask.vue";
 import { useTaskStore } from "../stores/TaskStore";
 import EditBoard from "../components/EditBoard.vue";
 import MobileNavbar from "../components/MobileNavbar.vue";
+import DeleteCard from "../components/DeleteCard.vue";
 
 export default {
-  components: { AddTask, EditBoard, MobileNavbar },
+  components: { AddTask, EditBoard, MobileNavbar, DeleteCard },
   setup() {
     const taskStore = useTaskStore();
     const addTask = ref(false);
     const editBoard = ref(false);
     const mobileNav = ref(false);
     const cardMenuIcon = ref(false);
-    return { taskStore, addTask, cardMenuIcon, editBoard, mobileNav };
+    const deleteCard = ref("");
+    return {
+      deleteCard,
+      taskStore,
+      addTask,
+      cardMenuIcon,
+      editBoard,
+      mobileNav,
+    };
   },
 };
 </script>

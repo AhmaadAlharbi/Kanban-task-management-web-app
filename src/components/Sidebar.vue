@@ -39,6 +39,7 @@
               </h4>
             </div>
             <h4
+              @click="addBoard = true"
               class="text-base font-bold text-myGray-medium hover:text-myPurple cursor-pointer px-4 mt-4"
             >
               + Add new Board

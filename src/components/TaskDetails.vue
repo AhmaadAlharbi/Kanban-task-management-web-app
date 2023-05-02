@@ -29,8 +29,9 @@
             >
               Edit Task
             </li>
+            <!-- @click="showConfirmDialog(selectedCard.id, 'task')" -->
             <li
-              @click="showConfirmDialog(selectedCard.id, 'task')"
+              @click="deleteCard = true"
               class="cursor-pointer text-red-400 hover:text-red-800"
             >
               Delete Task
@@ -101,6 +102,14 @@
       @close="EditTask = false"
     />
   </div>
+  <div v-if="deleteCard">
+    <DeleteCard
+      type="task"
+      :title="selectedCard.title"
+      :message="`Are you sure you want to delete the \`${selectedCard.title}\` task and its subtasks? This action cannot be reversed.`"
+      @close="deleteCard = false"
+    />
+  </div>
 </template>
 
 <script>
@@ -108,15 +117,19 @@ import { computed, ref, watch } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
 import Swal from "sweetalert2";
 import EditTask from "./EditTask.vue";
+import DeleteCard from "../components/DeleteCard.vue";
+
 export default {
   props: ["selectedCard"],
-  components: { EditTask },
+  components: { EditTask, DeleteCard },
   setup(props) {
     const taskStore = useTaskStore();
     const updateSubtask = async (subtask) => {
       taskStore.updateSubtasks(subtask.card_id, [subtask]);
     };
     taskStore.fetchSubtasks(props.selectedCard.id);
+    const deleteCard = ref("");
+
     const subtasks = ref([]);
     // Fetch subtasks based on the selected card id
     watch(
@@ -176,6 +189,7 @@ export default {
     });
 
     return {
+      deleteCard,
       updateSubtask,
       cardCompletedSubtasksCount,
       subtasks,
