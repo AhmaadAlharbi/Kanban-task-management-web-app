@@ -105,6 +105,7 @@
   <div v-if="deleteCard">
     <DeleteCard
       type="task"
+      :selectedCard="selectedCard"
       :title="selectedCard.title"
       :message="`Are you sure you want to delete the \`${selectedCard.title}\` task and its subtasks? This action cannot be reversed.`"
       @close="deleteCard = false"

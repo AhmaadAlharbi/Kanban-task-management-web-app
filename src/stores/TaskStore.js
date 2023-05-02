@@ -107,7 +107,7 @@ export const useTaskStore = defineStore("taskStore", {
         const newColumn = { id: res.id, board_id: boardId, name };
         this.columns.push(newColumn);
         // Reload the page
-        location.reload();
+        // location.reload();
       } catch (error) {
         console.error("Error adding column:", error);
       }
@@ -262,7 +262,7 @@ export const useTaskStore = defineStore("taskStore", {
           });
 
           // Refresh the page
-          location.reload();
+          // location.reload();
         }
       } catch (error) {
         console.error("Error deleting column and cards:", error);
@@ -276,7 +276,7 @@ export const useTaskStore = defineStore("taskStore", {
           (subtask) => subtask.id === subtaskId
         );
         this.subtasks.splice(index, 1);
-        location.reload();
+        // location.reload();
       } catch (error) {
         console.error("Error deleting subtask:", error);
       }
@@ -320,10 +320,19 @@ export const useTaskStore = defineStore("taskStore", {
       if (!columnID) {
         return;
       }
+      console.log("columnID:", columnID);
+      console.log("updates:", updates);
+
       try {
         const columnRef = projectFirestore.collection("columns").doc(columnID);
         await columnRef.update(updates);
-        Object.assign(column, updates);
+
+        // Find the column in the state and update it
+        const column = this.columns.find((col) => col.id === columnID);
+        console.log("column:", column);
+        if (column) {
+          Object.assign(column, updates);
+        }
       } catch (error) {
         console.error("Error updating column:", error);
       }

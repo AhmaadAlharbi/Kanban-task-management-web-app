@@ -38,15 +38,16 @@ import { useTaskStore } from "@/stores/TaskStore";
 import { timestamp } from "@/firebase/config";
 
 export default {
-  props: ["type", "title", "message"],
+  props: ["selectedCard", "type", "title", "message"],
   setup(props) {
     const taskStore = useTaskStore();
     const handleSubmit = () => {
       if (props.type === "task") {
-        taskStore.deleteCard(taskStore.selectedBoard.id);
+        taskStore.deleteCard(props.selectedCard.id);
       } else {
         taskStore.deleteBoardAndRelatedItems(taskStore.selectedBoard.id);
       }
+      // location.reload();
     };
     return { taskStore, handleSubmit };
   },

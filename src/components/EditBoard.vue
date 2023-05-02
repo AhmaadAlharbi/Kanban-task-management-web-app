@@ -33,7 +33,7 @@
 
           <!--- --->
           <div
-            v-for="(col, index) in BoardColumns"
+            v-for="(col, index) in columns"
             :key="index"
             class="flex items-center mb-2"
           >
@@ -85,8 +85,9 @@ export default {
     taskStore.fetchColumns(taskStore.selectedBoard.id);
     const name = ref(taskStore.selectedBoard.name);
     const columns = ref([]);
+    // columns.value = JSON.parse(JSON.stringify(taskStore.columns));
     const addColumns = () => {
-      taskStore.columns.push({
+      columns.value.push({
         board_id: taskStore.selectedBoard.id,
         name: "",
       });
@@ -107,11 +108,11 @@ export default {
         });
 
         // Update or add each column
-        for (const col of taskStore.columns) {
+        for (const col of columns.value) {
           const updates = {
             name: col.name,
             board_id: taskStore.selectedBoard.id,
-            createdAt: timestamp(),
+            // createdAt: timestamp(),
           };
           if (col.id) {
             // column exists, update it
@@ -122,16 +123,16 @@ export default {
           }
         }
 
-        // Show success message using SweetAlert
-        await Swal.fire({
-          title: "Board and columns updated!",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        // // Show success message using SweetAlert
+        // await Swal.fire({
+        //   title: "Board and columns updated!",
+        //   icon: "success",
+        //   showConfirmButton: false,
+        //   timer: 1500,
+        // });
 
         // Refresh the page
-        // location.reload();
+        location.reload();
       } catch (error) {
         console.error("Error updating board and columns:", error);
       }
