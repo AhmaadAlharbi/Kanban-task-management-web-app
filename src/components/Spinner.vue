@@ -2,6 +2,7 @@
   <div
     class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
     @click.self="$emit('close')"
+    v-if="taskStore.boards.length !== 0"
   >
     <span class="loader">Loading</span>
   </div>

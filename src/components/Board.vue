@@ -3,12 +3,35 @@
     <div v-if="taskStore.isLoading" class="flex justify-center items-cente">
       <Spinner />
     </div>
-    <div
-      class="overflow-x-auto"
-      v-if="taskStore.columns && !taskStore.isLoading"
-    >
+    <div v-if="taskStore.boards.length == 0">
+      <div class="flex space-y-5 flex-col justify-center h-screen items-center">
+        <p class="text-lg text-myGray-medium font-bold">
+          No Board . Create a new Board to get started.
+        </p>
+        <button
+          @click="addBoard = true"
+          class="block font-bold bg-myPurple text-white py-2 px-6 rounded-full"
+        >
+          + Add new Board
+        </button>
+      </div>
+    </div>
+    <div v-if="taskStore.columns.length == 0 && taskStore.boards.length > 0">
+      <div class="flex space-y-5 flex-col justify-center h-screen items-center">
+        <p class="text-lg text-myGray-medium font-bold">
+          This board is empty. Create a new column to get started.
+        </p>
+        <button
+          @click="editBoard = true"
+          class="block font-bold bg-myPurple text-white py-2 px-6 rounded-full"
+        >
+          + Add new Column
+        </button>
+      </div>
+    </div>
+    <div class="" v-if="taskStore.columns.length > 0 && !taskStore.isLoading">
       <div class="mt-10 mx-auto">
-        <div class="flex overflow-x-auto whitespace-no-wrap min-w-full">
+        <div class="flex flex-wrap md:flex-nowrap">
           <div
             class="flex-1"
             v-for="(col, index) in taskStore.columns"
@@ -18,7 +41,7 @@
             <Column :col="col" />
           </div>
           <div
-            class="p-10 min-h-[650px] flex justify-center items-center bg-myGray-light dark:bg-myGray-darker"
+            class="hidden p-10 min-h-[650px] md:flex justify-center items-center bg-myGray-light dark:bg-myGray-darker"
           >
             <button
               type="button"
@@ -34,6 +57,9 @@
     <div v-if="editBoard">
       <EditBoard :selectedBoard="selectedBoard" @close="editBoard = false" />
     </div>
+    <div v-if="addBoard">
+      <AddBoard @close="addBoard = false" />
+    </div>
   </div>
 </template>
 
@@ -43,15 +69,17 @@ import { useTaskStore } from "../stores/TaskStore";
 import TaskDetails from "../components/TaskDetails.vue";
 import Column from "../components/Column.vue";
 import EditBoard from "../components/EditBoard.vue";
+import AddBoard from "../components/AddBoard.vue";
 
 export default {
   props: ["cardCompletedSubtasksCount", "selectedBoard"],
-  components: { TaskDetails, Column, EditBoard },
+  components: { TaskDetails, Column, EditBoard, AddBoard },
   setup(props) {
     const taskStore = useTaskStore();
     const selectedCard = ref("");
     const showCardDetails = ref(false);
     const editBoard = ref(false);
+    const addBoard = ref(false);
     // Define computed property to calculate completed subtasks count
     const cardCompletedSubtasksCount = (card) => {
       const completedSubtasks = taskStore.subtasks.filter(
@@ -69,6 +97,7 @@ export default {
     };
 
     return {
+      addBoard,
       handleClick,
       showTaskDetails,
       selectedCard,

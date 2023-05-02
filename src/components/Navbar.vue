@@ -8,7 +8,7 @@
         {{ taskStore.selectedBoard.name }}
         <span class="md:hidden ml-2 mt-1 cursor-pointer"
           ><img
-            @click="mobileNav = true"
+            @click="mobileNav = !mobileNav"
             src="@/assets/images/icon-chevron-down.svg"
             alt=""
         /></span>
@@ -27,14 +27,26 @@
           + Add a New Task
         </li>
         <li
-          @click="addTask = true"
-          class="bg-myPurple md:hidden text-sm font-bold hover:bg-myLavender rounded-full py-2 px-4 text-white cursor-pointer"
+          @click="editBoard = true"
+          class="bg-myRed-darkest flex items-center space-x-2 md:hidden text-sm font-bold hover:bg-myRed-darker rounded-full py-2 px-4 text-white cursor-pointer"
         >
           <img
             class="md:hidden"
             src="@/assets/images/icon-add-task-mobile.svg"
             alt=""
           />
+          <span class="px-2">Column</span>
+        </li>
+        <li
+          @click="addTask = true"
+          class="bg-myPurple md:hidden text-sm flex items-center space-x-2 font-bold hover:bg-myLavender rounded-full py-2 px-4 text-white cursor-pointer"
+        >
+          <img
+            class="md:hidden"
+            src="@/assets/images/icon-add-task-mobile.svg"
+            alt=""
+          />
+          <span class="px-2">Task</span>
         </li>
         <img
           @click="cardMenuIcon = !cardMenuIcon"

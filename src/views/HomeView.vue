@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col w-full">
-    <div v-if="taskStore.isLoading" class="flex justify-center items-center">
+    <!-- <div v-if="taskStore.isLoading" class="flex justify-center items-center">
       <Spinner />
-    </div>
+    </div> -->
 
     <div class="flex flex-col lg:flex-row w-full">
       <div class="w-full px-4">

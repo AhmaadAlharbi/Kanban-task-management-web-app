@@ -19,42 +19,6 @@
           />
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="subtask">
-            Board columns
-          </label>
-
-          <!--- --->
-          <div
-            v-for="(col, index) in columns"
-            :key="index"
-            class="flex items-center mb-2"
-          >
-            <input
-              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              :id="'col-' + index"
-              type="text"
-              v-model="col.name"
-              :placeholder="'Enter column ' + (index + 1)"
-            />
-
-            <button
-              @click="removeColumns(index)"
-              class="ml-2 flex-shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-full bg-transparent text-white focus:outline-none focus:shadow-outline"
-              type="button"
-            >
-              <img src="@/assets/images/icon-cross.svg" alt="" />
-            </button>
-          </div>
-          <div class="flex justify-center my-7">
-            <button
-              @click="addColumns"
-              class="bg-myLavender w-full hover:bg-myPurple text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
-              type="button"
-            >
-              Add new columns
-            </button>
-          </div>
-
           <button
             class="bg-myPurple hover:bg-myLavender w-full text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
           >
@@ -75,15 +39,18 @@ export default {
     const taskStore = useTaskStore();
     const name = ref("");
     const columns = ref([]);
+
     const addColumns = () => {
       columns.value.push({
         board_id: taskStore.latestBoard.id,
         name: "",
       });
     };
+
     const removeColumns = (index) => {
       columns.value.splice(index, 1);
     };
+
     const handleSubmit = async () => {
       try {
         const newBoard = await taskStore.addBoard(name.value);
@@ -98,14 +65,11 @@ export default {
         console.error("Error adding board:", error);
       }
     };
-    onMounted(() => {
-      // Pre-populate columns array with an empty column object
-      columns.value = [{ board_id: taskStore.latestBoard.id, name: "" }];
-    });
+
     return {
       taskStore,
-      columns,
       name,
+      columns,
       addColumns,
       removeColumns,
       handleSubmit,
