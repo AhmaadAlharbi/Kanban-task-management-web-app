@@ -33,14 +33,15 @@
       <div class="mt-10 mx-auto">
         <div class="flex flex-wrap md:flex-nowrap">
           <div
-            class="flex-1"
+            class="flex-1 mx-3"
             v-for="(col, index) in taskStore.columns"
             :key="col.id"
             :index="index"
           >
-            <Column :col="col" />
+            <Column class="bg-pink-100" :col="col" />
           </div>
-          <div
+
+          <!-- <div
             class="hidden p-10 min-h-[650px] md:flex justify-center items-center bg-myGray-light dark:bg-myGray-darker"
           >
             <button
@@ -50,7 +51,7 @@
             >
               + New Column
             </button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

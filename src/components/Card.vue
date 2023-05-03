@@ -1,23 +1,16 @@
 <template>
-  <div
-    class="w-80"
-    v-for="card in boardCards"
-    :key="card.id"
-    @click="showTaskDetails(card)"
-  >
-    <div v-if="card.column_id === col.id">
-      <div
-        class="flex flex-col shadow-md mt-3 p-6 bg-white dark:bg-myGray-darker dark:text-white w-full md:w-80 mb-8 rounded-xl transition-colors duration-200 cursor-pointer hover:bg-myGray-lightest hover:text-myPurple"
+  <draggable v-model="taskStore.cards" tag="ul" @update="handleUpdate">
+    <template #item="{ element: card }">
+      <li
+        @dragstart="handleDragStart"
+        draggable
+        v-if="card.column_id === col.id"
+        class="bg-red-400 text-white py-4 px-6 my-4 cursor-move"
       >
-        <!-- Display the card title -->
-        <p class="font-bold text-md" v-if="card">{{ card.title }}</p>
-        <p class="text-myGray-medium font-semibold" v-if="card">
-          {{ completedSubtasksCount(card) }} of
-          {{ card.subtasks.length }} subtasks
-        </p>
-      </div>
-    </div>
-  </div>
+        {{ card.title }}
+      </li>
+    </template>
+  </draggable>
 
   <div v-if="showCardDetails">
     <TaskDetails
@@ -33,13 +26,15 @@ import { computed, defineComponent } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
 import TaskDetails from "./TaskDetails.vue";
 import { ref } from "vue";
+import draggable from "vuedraggable";
+
 export default defineComponent({
   props: {
     col: {
       required: true,
     },
   },
-  components: { TaskDetails },
+  components: { TaskDetails, draggable },
   setup(props) {
     const taskStore = useTaskStore();
     const showCardDetails = ref(false);
@@ -61,7 +56,22 @@ export default defineComponent({
       );
       return completedSubtasks.length;
     };
+    const handleUpdate = (event) => {
+      const newBoardCards = [...boardCards.value];
+      newBoardCards.splice(
+        event.newIndex,
+        0,
+        newBoardCards.splice(event.oldIndex, 1)[0]
+      );
+      boardCards.value = newBoardCards;
+    };
+    const handleDragStart = (event) => {
+      // Add the card data to the data transfer object
+      event.dataTransfer.setData("card", this.card);
+    };
     return {
+      handleDragStart,
+      handleUpdate,
       completedSubtasksCount,
       taskStore,
       selectedCard,

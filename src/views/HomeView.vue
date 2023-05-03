@@ -7,7 +7,7 @@
     <div class="flex flex-col lg:flex-row w-full">
       <div class="w-full px-4">
         <div class="flex flex-col lg:flex-row">
-          <Board :columnCardsCount="taskStore.columns" />
+          <Board :columns="taskStore.columns" />
         </div>
       </div>
       <div v-if="addTask" class="hidden lg:block lg:w-1/4 px-4">
