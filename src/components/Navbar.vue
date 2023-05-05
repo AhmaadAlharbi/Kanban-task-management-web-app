@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-white dark:bg-myGray-darker h-20">
+  <nav class="bg-white dark:bg-myGray-darker h-20 drop-shadow-2xl">
     <ul class="flex justify-between items-center px-4 md:px-10 py-5">
       <li class="text-2xl font-bold dark:text-white flex items-center">
         <span class="md:hidden mr-2"

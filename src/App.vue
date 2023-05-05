@@ -30,11 +30,6 @@ const sidebarComponent = ref(true);
 </script>
 
 <style scoped>
-.navbar {
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
-}
 .sidebar-enter-active,
 .sidebar-leave-active {
   transition: opacity 0.5s ease-in-out;

@@ -5,7 +5,7 @@
     @click.self="$emit('close')"
   >
     <div
-      class="bg-white dark:bg-myGray-darkest relative w-11/12 md:w-1/2 lg:w-1/3 max-w-2xl p-6 rounded-lg"
+      class="bg-white dark:bg-myGray-darkest relative w-11/12 md:w-1/2 lg:w-[25%] max-w-2xl p-6 rounded-lg"
     >
       <div class="flex justify-between items-center">
         <h1 class="mb-4 font-bold text-xl dark:text-white" v-if="selectedCard">
@@ -45,23 +45,32 @@
       </p>
       <div v-for="sub in selectedCard.subtasks" :key="sub.id">
         <div
-          class="bg-gray-200 p-2 my-2 rounded-lg flex items-center hover:bg-gray-100"
+          class="bg-myGray-lightest py-4 px-3 my-2 rounded-lg flex items-center hover:bg-gray-100"
         >
           <input
             @change="updateSubtask(sub)"
             v-model="sub.isCompleted"
             type="checkbox"
-            class="mr-2"
+            class="mr-2 hidden my-checkbox"
+            :id="'subtask-' + sub.id"
           />
+          <label
+            :for="'subtask-' + sub.id"
+            class="mr-2 custom-checkbox"
+            :class="{ checked: sub.isCompleted }"
+          ></label>
           <div class="flex-1 flex justify-between items-center">
-            <h1 :class="{ 'line-through italic': sub.isCompleted }">
+            <h1
+              :class="{ 'line-through italic': sub.isCompleted }"
+              class="text-myGray-medium"
+            >
               {{ sub.title }}
             </h1>
 
             <p>
               <i
                 class="fa fa-trash-o cursor-pointer hover:text-red-400 transition-colors duration-100"
-                style="font-size: 36px"
+                style="font-size: 22px"
                 @click="showConfirmDialog(sub.id, 'subtask')"
               ></i>
             </p>
@@ -87,12 +96,12 @@
       </div>
       <!-- current status -->
 
-      <button
+      <!-- <button
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         @click.stop="$emit('close')"
       >
         Close
-      </button>
+      </button> -->
     </div>
   </div>
   <div v-if="EditTask">
@@ -204,5 +213,36 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style  >
+.custom-checkbox {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border: 1px solid #8a3ffc;
+  cursor: pointer;
+  position: relative;
+  border-radius: 3px;
+}
+
+.custom-checkbox.checked {
+  background-color: #8a3ffc;
+}
+
+.custom-checkbox::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 6px;
+  height: 12px;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(45deg) translateY(-5px) translateX(3px);
+  margin-top: 3px;
+  opacity: 0;
+}
+
+.custom-checkbox.checked::before {
+  opacity: 1;
+}
 </style>

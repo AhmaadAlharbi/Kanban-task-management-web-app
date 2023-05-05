@@ -1,8 +1,8 @@
 <template>
   <div
-    class="bg-white min-h-screen dark:bg-myGray-darker shadow-xl py-6 w-80 px-2 md:w-96"
+    class="bg-white dark:bg-myGray-darker shadow-2xl py-6 w-80 px-2 overflow-y-hidden"
   >
-    <div class="flex flex-col justify-between h-full">
+    <div class="flex space-y-80 flex-col w-full min-h-screen">
       <div class="mb-6">
         <img
           v-if="taskStore.theme == 'light'"
@@ -21,22 +21,27 @@
             <div
               v-for="(board, index) in taskStore.boards"
               :key="board.id"
-              class="flex cursor-pointer space-x-3 py-2 px-4 rounded-lg hover:bg-myLavender transition-colors duration-300"
+              class="flex cursor-pointer space-x-3 py-2 px-4 rounded-full hover:bg-myLavender transition-colors duration-300"
               :class="{
                 'bg-myPurple': board.id === taskStore.selectedBoard.id,
               }"
             >
-              <img src="@/assets/images/icon-board.svg" alt="" />
-              <h4
-                @click="taskStore.selectedBoard = taskStore.boards[index]"
-                class="text-base font-bold"
-                :class="{
-                  'text-myGray-medium': board.id !== taskStore.selectedBoard.id,
-                  'text-white': board.id === taskStore.selectedBoard.id,
-                }"
-              >
-                {{ board.name }}
-              </h4>
+              <div class="flex items-center space-x-4">
+                <div>
+                  <img src="@/assets/images/icon-board.svg" alt="" />
+                </div>
+                <h4
+                  @click="taskStore.selectedBoard = taskStore.boards[index]"
+                  class="text-base font-bold flex-grow"
+                  :class="{
+                    'text-myGray-medium':
+                      board.id !== taskStore.selectedBoard.id,
+                    'text-white': board.id === taskStore.selectedBoard.id,
+                  }"
+                >
+                  {{ board.name }}
+                </h4>
+              </div>
             </div>
             <h4
               @click="addBoard = true"
@@ -47,9 +52,9 @@
           </nav>
         </div>
       </div>
-      <div class="flex flex-col justify-between mb-6">
+      <div class="flex flex-col justify-between">
         <div
-          class="flex justify-center max-w-sm mx-auto bg-gray-200 dark:bg-myGray-darkest py-2 px-10 mb-5 space-x-3 items-center"
+          class="flex justify-center max-w-sm mx-auto bg-gray-200 dark:bg-myGray-darkest py-2 px-10 space-x-3 items-center"
         >
           <img
             src="../assets/images/icon-light-theme.svg"
