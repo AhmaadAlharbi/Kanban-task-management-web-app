@@ -1,14 +1,18 @@
 <template>
-  <draggable v-model="taskStore.cards" tag="ul" @update="handleUpdate">
+  <draggable v-model="taskStore.cards" tag="div" @update="handleUpdate">
     <template #item="{ element: card }">
-      <li
-        @dragstart="handleDragStart"
-        draggable
+      <div
+        @click="showTaskDetails(card)"
         v-if="card.column_id === col.id"
-        class="bg-red-400 text-white py-4 px-6 my-4 cursor-move"
+        class="flex flex-col shadow-md mt-3 p-6 bg-white dark:bg-myGray-darker dark:text-white w-full md:w-80 mb-8 rounded-xl transition-colors duration-200 cursor-pointer hover:bg-myGray-lightest hover:text-myPurple"
       >
-        {{ card.title }}
-      </li>
+        <!-- Display the card title -->
+        <p class="font-bold text-md" v-if="card">{{ card.title }}</p>
+        <p class="text-myGray-medium font-semibold" v-if="card">
+          {{ completedSubtasksCount(card) }} of
+          {{ card.subtasks.length }} subtasks
+        </p>
+      </div>
     </template>
   </draggable>
 

@@ -31,17 +31,17 @@
     </div>
     <div class="" v-if="taskStore.columns.length > 0 && !taskStore.isLoading">
       <div class="mt-10 mx-auto">
-        <div class="flex flex-wrap md:flex-nowrap">
+        <div class="flex flex-wrap md:flex-nowrap max-w-7xl">
           <div
             class="flex-1 mx-3"
             v-for="(col, index) in taskStore.columns"
             :key="col.id"
             :index="index"
           >
-            <Column class="bg-pink-100" :col="col" />
+            <Column :col="col" />
           </div>
 
-          <!-- <div
+          <div
             class="hidden p-10 min-h-[650px] md:flex justify-center items-center bg-myGray-light dark:bg-myGray-darker"
           >
             <button
@@ -51,7 +51,7 @@
             >
               + New Column
             </button>
-          </div> -->
+          </div>
         </div>
       </div>
     </div>
