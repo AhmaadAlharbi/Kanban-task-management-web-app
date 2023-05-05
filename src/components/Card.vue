@@ -43,7 +43,12 @@ export default defineComponent({
     const taskStore = useTaskStore();
     const showCardDetails = ref(false);
     const selectedCard = ref("");
-    taskStore.fetchCards(taskStore.selectedBoard.id);
+    taskStore.fetchCards(props.id).then(() => {
+      //fetch subtask for each card
+      for (const card of taskStore.cards) {
+        taskStore.fetchSubtasks(card.id);
+      }
+    });
     const boardCards = computed(() => {
       return taskStore.cards.filter((card) => card.column_id === props.col.id);
     });

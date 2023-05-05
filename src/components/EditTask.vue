@@ -56,10 +56,10 @@
               </button>
             </div>
           </div>
-          <div v-for="(subtask, index) in newSubtasks" :key="index">
-            <div class="flex items-center" v-if="index > 0">
+          <div v-for="(subtask, index) in taskStore.subtasks" :key="index">
+            <div class="flex items-center">
               <input
-                class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                class="appearance-none border rounded w-full py-2 mb-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 :id="'subtask-' + index"
                 type="text"
                 v-model="subtask.title"
@@ -120,12 +120,13 @@ export default {
     const newSubtasks = ref([]);
     const taskStore = useTaskStore();
     // taskStore.fetchColumns();
+    taskStore.fetchSubtasks(props.selectedCard.id);
     const title = ref("");
     const description = ref("");
     const status = ref("");
     const selectedColumnId = ref(props.selectedCard.column_id);
     const addSubtask = () => {
-      newSubtasks.value.push({ title: "", isCompleted: false });
+      taskStore.subtasks.push({ title: "", isCompleted: false });
     };
     const removeSubtask = (index) => {
       newSubtasks.value.splice(index, 1);
@@ -167,7 +168,7 @@ export default {
           title: props.selectedCard.title,
           description: props.selectedCard.description,
         });
-        const nonEmptySubtasks = newSubtasks.value.filter(
+        const nonEmptySubtasks = taskStore.subtasks.filter(
           (subtask) => subtask.title !== ""
         );
         if (nonEmptySubtasks.length > 0) {

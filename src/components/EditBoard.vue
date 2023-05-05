@@ -33,7 +33,7 @@
 
           <!--- --->
           <div
-            v-for="(col, index) in columns"
+            v-for="(col, index) in taskStore.columns"
             :key="index"
             class="flex items-center mb-2"
           >
@@ -87,7 +87,7 @@ export default {
     const columns = ref([]);
     // columns.value = JSON.parse(JSON.stringify(taskStore.columns));
     const addColumns = () => {
-      columns.value.push({
+      taskStore.columns.push({
         board_id: taskStore.selectedBoard.id,
         name: "",
       });

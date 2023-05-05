@@ -6,7 +6,19 @@
     >
       <Spinner />
     </div>
-
+    <!-- <div v-if="taskStore.columns.length == 0 && taskStore.boards.length > 0">
+      <div class="flex space-y-5 flex-col justify-center h-screen items-center">
+        <p class="text-lg text-myGray-medium font-bold">
+          This board is empty. Create a new column to get started.
+        </p>
+        <button
+          @click="editBoard = true"
+          class="block font-bold bg-myPurple text-white py-2 px-6 rounded-full"
+        >
+          + Add new Column
+        </button>
+      </div>
+    </div> -->
     <div class="" v-if="taskStore.columns.length > 0 && !taskStore.isLoading">
       <div class="mt-10 mx-auto">
         <div class="flex flex-wrap md:flex-nowrap max-w-7xl">

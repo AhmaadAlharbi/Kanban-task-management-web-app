@@ -32,48 +32,70 @@ export const useTaskStore = defineStore("taskStore", {
 
   actions: {
     async fetchBoards() {
-      const res = await projectFirestore.collection("Boards").get();
+      const res = await projectFirestore
+        .collection("Boards")
+        .orderBy("createdAt")
+        .get();
       this.boards = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       this.selectedBoard = this.boards[0];
     },
     async fetchColumns(boardId) {
-      this.isLoading = true;
-
       if (!boardId) {
         return;
       }
       const res = await projectFirestore
         .collection("columns")
         .where("board_id", "==", boardId)
+        .orderBy("createdAt")
         .get();
       this.columns = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      this.isLoading = false;
     },
     async fetchCards(boardId) {
       if (!boardId) {
         return;
       }
-      const cardsRef = projectFirestore.collection("cards");
-      const cardsQuery = cardsRef.where("board_id", "==", boardId);
-      const cardsSnapshot = await cardsQuery.get();
-      this.cards = cardsSnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-        subtasks: [],
-      }));
-      // Fetch subtasks for each card
-      for (const card of this.cards) {
-        const subtasksRef = projectFirestore
-          .collection("subtasks")
-          .where("card_id", "==", card.id);
-        const subtasksSnapshot = await subtasksRef.get();
-        card.subtasks = subtasksSnapshot.docs.map((doc) => ({
+      try {
+        // Set isLoading to true to indicate that the data is being fetched.
+        this.isLoading = true;
+
+        // Create a reference to the "cards" collection.
+        const cardsRef = projectFirestore.collection("cards");
+
+        // Create a query to fetch cards with the given boardId and ordered by "createdAt".
+        const cardsQuery = cardsRef
+          .where("board_id", "==", boardId)
+          .orderBy("createdAt");
+
+        // Execute the query and fetch the cards.
+        const cardsSnapshot = await cardsQuery.get();
+
+        // Map the retrieved documents to an array of card objects with their data, IDs, and an empty subtasks array.
+        this.cards = cardsSnapshot.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
+          subtasks: [],
         }));
+
+        // Fetch subtasks for each card
+        for (const card of this.cards) {
+          const subtasksRef = projectFirestore
+            .collection("subtasks")
+            .where("card_id", "==", card.id);
+          const subtasksSnapshot = await subtasksRef.get();
+          card.subtasks = subtasksSnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+        }
+      } catch (error) {
+        // Log an error message if there's an issue while fetching the cards and subtasks.
+        console.error("Error fetching cards and subtasks:", error);
+      } finally {
+        // Set isLoading to false to indicate that the data has been fetched.
+        this.isLoading = false;
       }
-      this.isLoading = false;
     },
+
     async fetchSubtasks(cardId) {
       if (!cardId) {
         return;
@@ -89,43 +111,74 @@ export const useTaskStore = defineStore("taskStore", {
       if (card) {
         card.subtasks = subtasks;
       }
+      // Update the subtasks state
+      this.subtasks = subtasks;
     },
+
     async addBoard(name) {
       try {
-        const res = await projectFirestore.collection("Boards").add({ name });
+        // Create a timestamp using the current date and time.
+        const timestamp = () => new Date();
+
+        // Add a new board to the "Boards" collection in Firestore.
+        const res = await projectFirestore.collection("Boards").add({
+          name,
+          createdAt: timestamp(),
+        });
+
+        // Create a new board object with the Firestore document ID and the board name.
         const newBoard = { id: res.id, name };
+
+        // Add the new board object to the "boards" array.
         this.boards.push(newBoard);
+
+        // Return the new board object.
+        return newBoard;
       } catch (error) {
+        // Log an error message if there's an issue while adding the board.
         console.error("Error adding board:", error);
       }
     },
+
     async addColumn(boardId, name) {
       try {
+        const timestamp = () => new Date();
+
         const res = await projectFirestore
           .collection("columns")
-          .add({ board_id: boardId, name });
-        const newColumn = { id: res.id, board_id: boardId, name };
+          .add({ board_id: boardId, name, createdAt: timestamp() });
+        const newColumn = {
+          id: res.id,
+          board_id: boardId,
+          name,
+          createdAt: timestamp(),
+        };
         this.columns.push(newColumn);
         // Reload the page
-        location.reload();
+        // location.reload();
       } catch (error) {
         console.error("Error adding column:", error);
       }
     },
 
     async addCard(boardId, columnId, title, description, subtasks = []) {
+      const timestamp = () => new Date();
+
       const newCard = {
         board_id: boardId,
         column_id: columnId,
         title: title,
         description: description, // convert description to a string
+        createdAt: timestamp(),
       };
       try {
+        this.isLoading = true;
         const res = await projectFirestore.collection("cards").add(newCard);
         this.cards.push({ ...newCard, id: res.id });
         for (const subtask of subtasks) {
           await this.addSubtasks(res.id, subtask.title, subtask.isCompleted);
         }
+        this.isLoading = false;
       } catch (error) {
         console.error("Error adding card:", error);
       }
