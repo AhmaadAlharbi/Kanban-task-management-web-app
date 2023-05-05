@@ -39,7 +39,7 @@
           </ul>
         </nav>
       </div>
-      <p class="dark:text-white">
+      <p class="dark:text-white text-sm">
         subtasks ( {{ cardCompletedSubtasksCount(selectedCard) }} of
         {{ selectedCard.subtasks.length }} )
       </p>
@@ -69,7 +69,7 @@
 
             <p>
               <i
-                class="fa fa-trash-o cursor-pointer hover:text-red-400 transition-colors duration-100"
+                class="fa fa-trash-o text-myLavender cursor-pointer hover:text-myRed-darkest transition-colors duration-100"
                 style="font-size: 22px"
                 @click="showConfirmDialog(sub.id, 'subtask')"
               ></i>

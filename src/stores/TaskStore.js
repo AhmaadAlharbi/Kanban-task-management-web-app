@@ -9,7 +9,7 @@ export const useTaskStore = defineStore("taskStore", {
     columns: [],
     cards: [],
     subtasks: [],
-    isLoading: true,
+    isLoading: false,
     theme: "light",
   }),
   getters: {
@@ -107,7 +107,7 @@ export const useTaskStore = defineStore("taskStore", {
         const newColumn = { id: res.id, board_id: boardId, name };
         this.columns.push(newColumn);
         // Reload the page
-        // location.reload();
+        location.reload();
       } catch (error) {
         console.error("Error adding column:", error);
       }
@@ -154,8 +154,7 @@ export const useTaskStore = defineStore("taskStore", {
         return;
       }
       try {
-        // Prompt the user to confirm the deletion
-        this.isLoading = false;
+        this.isLoading = true;
 
         // Delete all the cards associated with the board from Firestore
         const cardsToDelete = this.cards.filter(
@@ -178,13 +177,13 @@ export const useTaskStore = defineStore("taskStore", {
             .collection("subtasks")
             .doc(subtask.id)
             .delete();
-        }
 
-        // Remove all the subtasks associated with the board from local state
-        this.subtasks = this.subtasks.filter((subtask) => {
-          const card = this.cards.find((card) => card.id === subtask.card_id);
-          return card.board_id !== boardId;
-        });
+          // Remove all the subtasks associated with the board from local state
+          this.subtasks = this.subtasks.filter((subtask) => {
+            const card = this.cards.find((card) => card.id === subtask.card_id);
+            return card.board_id !== boardId;
+          });
+        }
 
         // Delete all the columns associated with the board from Firestore
         const columnsToDelete = this.columns.filter(
@@ -200,21 +199,23 @@ export const useTaskStore = defineStore("taskStore", {
         // Delete the board from Firestore
         await projectFirestore.collection("Boards").doc(boardId).delete();
 
+        // Set isLoading to false after all the deletions are complete
+        this.isLoading = false;
+
         // Remove the board from local state
         const index = this.boards.findIndex((board) => board.id === boardId);
         this.boards.splice(index, 1);
         this.selectedBoard = this.boards[0];
+
         // Show confirmation using SweetAlert
-        await Swal.fire({
-          title: "Board, columns, cards, and subtasks deleted!",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        // await Swal.fire({
+        //   title: "Board, columns, cards, and subtasks deleted!",
+        //   icon: "success",
+        //   showConfirmButton: false,
+        //   timer: 1500,
+        // });
 
         // Reload the page
-        this.isLoading = true;
-
         location.reload();
       } catch (error) {
         console.error("Error deleting board and related items:", error);
@@ -262,7 +263,7 @@ export const useTaskStore = defineStore("taskStore", {
           });
 
           // Refresh the page
-          // location.reload();
+          location.reload();
         }
       } catch (error) {
         console.error("Error deleting column and cards:", error);
@@ -276,7 +277,7 @@ export const useTaskStore = defineStore("taskStore", {
           (subtask) => subtask.id === subtaskId
         );
         this.subtasks.splice(index, 1);
-        // location.reload();
+        location.reload();
       } catch (error) {
         console.error("Error deleting subtask:", error);
       }
@@ -320,19 +321,10 @@ export const useTaskStore = defineStore("taskStore", {
       if (!columnID) {
         return;
       }
-      console.log("columnID:", columnID);
-      console.log("updates:", updates);
-
       try {
         const columnRef = projectFirestore.collection("columns").doc(columnID);
         await columnRef.update(updates);
-
-        // Find the column in the state and update it
-        const column = this.columns.find((col) => col.id === columnID);
-        console.log("column:", column);
-        if (column) {
-          Object.assign(column, updates);
-        }
+        Object.assign(column, updates);
       } catch (error) {
         console.error("Error updating column:", error);
       }

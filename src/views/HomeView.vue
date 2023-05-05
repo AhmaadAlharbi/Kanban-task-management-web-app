@@ -1,9 +1,5 @@
 <template>
-  <div class="flex flex-col w-full">
-    <!-- <div v-if="taskStore.isLoading" class="flex justify-center items-center">
-      <Spinner />
-    </div> -->
-
+  <div class="flex flex-col">
     <div class="flex flex-col lg:flex-row w-full">
       <div class="w-full px-4">
         <div class="flex flex-col lg:flex-row">
@@ -25,6 +21,7 @@ import TaskDetails from "../components/TaskDetails.vue";
 import Spinner from "../components/Spinner.vue";
 import Column from "../components/Column.vue";
 import Board from "../components/Board.vue";
+
 export default defineComponent({
   components: {
     AddTask,

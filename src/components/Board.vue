@@ -1,34 +1,12 @@
 <template>
-  <div class="flex flex-col w-full justify-center items-stretch">
-    <div v-if="taskStore.isLoading" class="flex justify-center items-cente">
+  <div class="flex flex-col justify-center items-stretch">
+    <div
+      v-if="taskStore.isLoading && taskStore.boards"
+      class="flex justify-center items-cente"
+    >
       <Spinner />
     </div>
-    <div v-if="taskStore.boards.length == 0">
-      <div class="flex space-y-5 flex-col justify-center h-screen items-center">
-        <p class="text-lg text-myGray-medium font-bold">
-          No Board . Create a new Board to get started.
-        </p>
-        <button
-          @click="addBoard = true"
-          class="block font-bold bg-myPurple text-white py-2 px-6 rounded-full"
-        >
-          + Add new Board
-        </button>
-      </div>
-    </div>
-    <div v-if="taskStore.columns.length == 0 && taskStore.boards.length > 0">
-      <div class="flex space-y-5 flex-col justify-center h-screen items-center">
-        <p class="text-lg text-myGray-medium font-bold">
-          This board is empty. Create a new column to get started.
-        </p>
-        <button
-          @click="editBoard = true"
-          class="block font-bold bg-myPurple text-white py-2 px-6 rounded-full"
-        >
-          + Add new Column
-        </button>
-      </div>
-    </div>
+
     <div class="" v-if="taskStore.columns.length > 0 && !taskStore.isLoading">
       <div class="mt-10 mx-auto">
         <div class="flex flex-wrap md:flex-nowrap max-w-7xl">
@@ -71,10 +49,11 @@ import TaskDetails from "../components/TaskDetails.vue";
 import Column from "../components/Column.vue";
 import EditBoard from "../components/EditBoard.vue";
 import AddBoard from "../components/AddBoard.vue";
+import Spinner from "./Spinner.vue";
 
 export default {
   props: ["cardCompletedSubtasksCount", "selectedBoard"],
-  components: { TaskDetails, Column, EditBoard, AddBoard },
+  components: { TaskDetails, Column, EditBoard, AddBoard, Spinner },
   setup(props) {
     const taskStore = useTaskStore();
     const selectedCard = ref("");

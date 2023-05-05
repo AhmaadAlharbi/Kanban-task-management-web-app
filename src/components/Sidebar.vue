@@ -1,8 +1,8 @@
 <template>
   <div
-    class="bg-white dark:bg-myGray-darker shadow-2xl py-6 w-80 px-2 overflow-y-hidden"
+    class="bg-myWhite min-h-screen drop-shadow-sm dark:bg-myGray-darker py-6 w-80 px-2"
   >
-    <div class="flex space-y-80 flex-col w-full min-h-screen">
+    <div class="flex space-y-96 flex-col w-full">
       <div class="mb-6">
         <img
           v-if="taskStore.theme == 'light'"
@@ -89,9 +89,9 @@
         </p>
       </div>
     </div>
-    <div v-if="addBoard">
-      <AddBoard @close="addBoard = false" />
-    </div>
+  </div>
+  <div v-if="addBoard">
+    <AddBoard @close="addBoard = false" />
   </div>
 </template>
 
