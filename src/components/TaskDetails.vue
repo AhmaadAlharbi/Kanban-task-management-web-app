@@ -5,7 +5,7 @@
     @click.self="$emit('close')"
   >
     <div
-      class="bg-white dark:bg-myGray-darkest relative w-11/12 md:w-1/2 lg:w-[25%] max-w-2xl p-6 rounded-lg"
+      class="bg-white dark:bg-myGray-darkest relative w-11/12 md:w-1/2 lg:w-[30%] max-w-2xl p-6 rounded-lg"
     >
       <div class="flex justify-between items-center">
         <h1 class="mb-4 font-bold text-xl dark:text-white" v-if="selectedCard">
@@ -134,9 +134,15 @@ export default {
   components: { EditTask, DeleteCard },
   setup(props) {
     const taskStore = useTaskStore();
+
     const updateSubtask = async (subtask) => {
-      taskStore.updateSubtasks(subtask.card_id, [subtask]);
+      const cardSubtasks = selectedCard.subtasks;
+      const updatedSubtasks = cardSubtasks.map((s) =>
+        s.id === subtask.id ? subtask : s
+      );
+      taskStore.updateSubtasks(subtask.card_id, updatedSubtasks);
     };
+
     taskStore.fetchSubtasks(props.selectedCard.id);
     const deleteCard = ref("");
 
