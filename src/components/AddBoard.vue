@@ -11,12 +11,19 @@
             Board Name
           </label>
           <input
+            v-bind:class="{
+              'appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline': true,
+              'border-red-500': isNameInvalid,
+            }"
             class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="title"
             type="text"
             placeholder="Enter board name"
             v-model="name"
           />
+          <span v-show="isNameInvalid" class="text-red-500 text-xs italic">
+            Can't be empty
+          </span>
         </div>
         <div class="mb-4">
           <label
@@ -70,11 +77,13 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
-
+import { useVuelidate } from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 export default {
   setup() {
+    const v = useVuelidate();
     const taskStore = useTaskStore();
     const name = ref("");
     const columns = ref([]);
@@ -88,6 +97,13 @@ export default {
     };
 
     const handleSubmit = async () => {
+      v.value.$touch(); // Mark all fields as touched
+      formSubmitted.value = true;
+
+      if (v.value.$invalid) {
+        // Change this line from v.value.$error to v.value.$invalid
+        return;
+      }
       try {
         const newBoard = await taskStore.addBoard(name.value);
         // Add all the columns for the new board
@@ -101,14 +117,27 @@ export default {
         console.error("Error adding board:", error);
       }
     };
+    const formSubmitted = ref(false);
+
+    const isNameInvalid = computed(
+      () =>
+        v.value.name.$invalid && (v.value.name.$touched || formSubmitted.value)
+    );
 
     return {
+      v,
+      isNameInvalid,
       taskStore,
       name,
       columns,
       addColumns,
       removeColumns,
       handleSubmit,
+    };
+  },
+  validations() {
+    return {
+      name: { required },
     };
   },
 };

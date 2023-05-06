@@ -19,12 +19,19 @@
             Title
           </label>
           <input
+            v-bind:class="{
+              'appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline': true,
+              'border-red-500': isTitleInvalid,
+            }"
             class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="title"
             type="text"
             placeholder="Enter title"
             v-model="title"
           />
+          <span v-show="isTitleInvalid" class="text-red-500 text-xs italic">
+            Can't be empty
+          </span>
         </div>
         <div class="mb-4">
           <label
@@ -34,11 +41,21 @@
             Description
           </label>
           <textarea
+            v-bind:class="{
+              'appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline': true,
+              'border-red-500': isDescriptionInvalid,
+            }"
             class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="description"
             placeholder="Enter description"
             v-model="description"
           ></textarea>
+          <span
+            v-show="isDescriptionInvalid"
+            class="text-red-500 text-xs italic"
+          >
+            Can't be empty
+          </span>
         </div>
         <div class="mb-4">
           <label
@@ -98,6 +115,7 @@
             </option>
           </select>
           <button
+            type="submit"
             class="bg-myLavender w-full text-white font-bold py-2 px-4 mt-6 inline-block rounded-full focus:outline-none focus:shadow-outline"
           >
             Create Task
@@ -109,11 +127,15 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useTaskStore } from "@/stores/TaskStore";
+import { useVuelidate } from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 
 export default {
   setup() {
+    const v = useVuelidate();
+
     const subtasks = ref([]);
     const taskStore = useTaskStore();
     // taskStore.fetchBoards().then(() => {
@@ -127,11 +149,19 @@ export default {
     const addSubtask = () => {
       subtasks.value.push({ title: "", isCompleted: false });
     };
+    const formSubmitted = ref(false);
 
     const removeSubtask = (index) => {
       subtasks.value.splice(index, 1);
     };
     const handleSubmit = () => {
+      v.value.$touch(); // Mark all fields as touched
+      formSubmitted.value = true;
+
+      if (v.value.$invalid) {
+        // Change this line from v.value.$error to v.value.$invalid
+        return;
+      }
       taskStore
         .addCard(
           taskStore.selectedBoard.id,
@@ -147,8 +177,20 @@ export default {
             location.reload(); // reload the page after the task is added
         });
     };
+    const isTitleInvalid = computed(
+      () =>
+        v.value.title.$invalid &&
+        (v.value.title.$touched || formSubmitted.value)
+    );
+    const isDescriptionInvalid = computed(
+      () =>
+        v.value.description.$invalid &&
+        (v.value.description.$touched || formSubmitted.value)
+    );
 
     return {
+      isDescriptionInvalid,
+      isTitleInvalid,
       selectedColumnId,
       title,
       description,
@@ -158,6 +200,13 @@ export default {
       subtasks,
       addSubtask,
       removeSubtask,
+      v,
+    };
+  },
+  validations() {
+    return {
+      title: { required },
+      description: { required },
     };
   },
 };
