@@ -20,8 +20,8 @@
       </div>
     </div> -->
     <div class="" v-if="taskStore.columns.length > 0 && !taskStore.isLoading">
-      <div class="mt-10 mx-auto">
-        <div class="flex flex-wrap md:flex-nowrap max-w-7xl">
+      <div class="mt-10 mx-auto max-w-3xl">
+        <div class="flex flex-wrap md:flex-nowrap">
           <div
             class="flex-1 mx-3"
             v-for="(col, index) in taskStore.columns"

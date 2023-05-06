@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-myWhite dark:bg-myGray-darker h-20">
+  <nav class="bg-myWhite dark:bg-myGray-darker h-20 overflow-hidden">
     <ul class="flex justify-between items-center px-4 md:px-10 py-5">
       <li class="text-2xl font-bold dark:text-white flex items-center">
         <span class="md:hidden mr-2"
@@ -28,7 +28,7 @@
         </li>
         <li
           @click="editBoard = true"
-          class="bg-myRed-darkest flex items-center space-x-2 md:hidden text-sm font-bold hover:bg-myRed-darker rounded-full py-2 px-4 text-white cursor-pointer"
+          class="bg-myGray-medium flex items-center space-x-2 md:hidden text-sm font-bold hover:bg-myRed-darker rounded-full py-2 px-4 text-white cursor-pointer"
         >
           <img
             class="md:hidden"

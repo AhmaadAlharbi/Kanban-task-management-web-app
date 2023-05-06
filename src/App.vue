@@ -2,7 +2,7 @@
   <div class="flex flex-row">
     <transition name="sidebar h">
       <Sidebar
-        class="hidden md:flex"
+        class="hidden md:flex flex-1"
         v-if="sidebarComponent"
         @close-sidebar="sidebarComponent = false"
       />

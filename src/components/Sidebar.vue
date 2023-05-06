@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-myWhite min-h-screen drop-shadow-sm dark:bg-myGray-darker py-6 w-80 px-2"
+    class="bg-myWhite hidden md:block min-h-screen drop-shadow-sm dark:bg-myGray-darker py-6 px-2"
   >
     <div class="flex space-y-96 flex-col w-full">
       <div class="mb-6">
