@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col justify-center items-stretch">
-    <div
+    <!-- <div
       v-if="taskStore.isLoading && taskStore.boards"
       class="flex justify-center items-cente"
     >
       <Spinner />
-    </div>
+    </div> -->
     <!-- <div v-if="taskStore.columns.length == 0 && taskStore.boards.length > 0">
       <div class="flex space-y-5 flex-col justify-center h-screen items-center">
         <p class="text-lg text-myGray-medium font-bold">

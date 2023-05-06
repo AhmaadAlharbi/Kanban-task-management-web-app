@@ -45,7 +45,7 @@
       </p>
       <div v-for="sub in selectedCard.subtasks" :key="sub.id">
         <div
-          class="bg-myGray-lightest py-4 px-3 my-2 rounded-lg flex items-center hover:bg-gray-100"
+          class="bg-myGray-lightest dark:bg-myGray-darker max-w-2xl py-4 px-3 my-2 rounded-lg flex items-center hover:bg-gray-100"
         >
           <input
             @change="updateSubtask(sub)"
@@ -80,7 +80,7 @@
       <div class="mb-4">
         <label class="mr-2 dark:text-white">Current Status</label>
         <select
-          class="bg-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
+          class="bg-white dark:bg-myGray-darker dark:text-white border border-gray-400 px-4 py-2 rounded-lg text-gray-700 w-full block my-1"
           v-model="selectedColumnId"
         >
           <option value="" disabled>Select a column</option>
@@ -136,7 +136,7 @@ export default {
     const taskStore = useTaskStore();
 
     const updateSubtask = async (subtask) => {
-      const cardSubtasks = selectedCard.subtasks;
+      const cardSubtasks = props.selectedCard.subtasks;
       const updatedSubtasks = cardSubtasks.map((s) =>
         s.id === subtask.id ? subtask : s
       );
